@@ -1,0 +1,17 @@
+# Design files
+*.ai
+*.psd
+*.bmp
+
+# Test files
+test-*.html
+*Test*.pdf
+*.txt
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*~

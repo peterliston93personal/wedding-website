@@ -1,0 +1,805 @@
+/* Import Fonts */
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('Fonts/static/SourceSerif4-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('Fonts/static/SourceSerif4-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('Fonts/static/SourceSerif4-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('Fonts/static/SourceSerif4-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Source Serif 4';
+    src: url('Fonts/static/SourceSerif4-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Source Serif 4', serif;
+    background-color: #E8E4DC;
+    color: #1a1a1a;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Navigation */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(232, 228, 220, 0.95);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Digital Invitation Section */
+.digital-invitation {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 20px 60px;
+    background-color: #E8E4DC;
+}
+
+.invitation-container {
+    max-width: 1400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.invitation-image {
+    width: 85%;
+    max-width: 450px;
+    height: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: fadeInOut 2s ease-in-out infinite;
+}
+
+.scroll-arrow {
+    font-size: 24px;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+}
+
+/* Digital Invitation Section */
+.invitation-section {
+    padding-top: 90px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E8E4DC;
+}
+
+.invitation-container {
+    text-align: center;
+    max-width: 450px;
+    padding: 10px;
+}
+
+.invitation-image {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+    animation: revealInvitation 2s ease-out;
+}
+
+@keyframes revealInvitation {
+    0% {
+        transform: scale(1.5) translateY(-50px);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.invitation-image:hover {
+    transform: scale(1.02);
+}
+
+.invitation-scroll-hint {
+    margin-top: 30px;
+    font-size: 14px;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5px;
+    animation: bounceHint 2s infinite, fadeIn 2.5s ease-in;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceHint {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Navigation */
+
+.nav-brand {
+    font-size: 14px;
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: opacity 0.3s ease;
+    font-weight: 400;
+}
+
+.nav-links a:hover {
+    opacity: 0.6;
+}
+
+.rsvp-button {
+    border: 1px solid #1a1a1a;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.rsvp-button:hover {
+    background-color: #1a1a1a;
+    color: #E8E4DC;
+    opacity: 1;
+}
+
+/* Digital Invitation Section */
+.invitation-section {
+    padding-top: 80px;
+    padding-bottom: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #E8E4DC;
+}
+
+.invitation-container {
+    text-align: center;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.invitation-image {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+
+.invitation-image:hover {
+    transform: scale(1.02);
+}
+
+.invitation-scroll-hint {
+    margin-top: 30px;
+    font-size: 14px;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Hero Section */
+.hero {
+    padding-top: 100px;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-content {
+    padding: 40px 20px;
+}
+
+.hero-subtitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    line-height: 1.8;
+}
+
+.hero-names {
+    font-size: 80px;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.1;
+    margin: 40px 0;
+}
+
+.ampersand {
+    font-size: 60px;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.hero-details {
+    margin-top: 60px;
+    line-height: 2;
+}
+
+.hero-date {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.hero-venue {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Banner */
+.banner-container {
+    width: 100%;
+    overflow: hidden;
+    margin: 60px 0;
+    padding: 50px 0;
+    position: relative;
+}
+
+.banner {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0px;
+    white-space: nowrap;
+    animation: marquee 80s linear infinite;
+    will-change: transform;
+}
+
+.banner > * {
+    font-size: 16px;
+    font-style: italic;
+    letter-spacing: 2px;
+    display: inline-block;
+    animation: smoothWave 3s ease-in-out infinite;
+    margin-right: 4px;
+}
+
+.banner > span {
+    min-width: 2px;
+}
+
+.banner-heart {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    animation: smoothWave 3s ease-in-out infinite;
+    margin: 0 60px;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+@keyframes smoothWave {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-35px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Intro Text */
+.intro-text {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.intro-text p {
+    margin-bottom: 10px;
+}
+
+/* Container */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 60px;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 60px;
+}
+
+/* Weekend Section */
+.weekend-section {
+    padding: 100px 0;
+}
+
+.schedule {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 80px;
+}
+
+.day-title {
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 40px;
+}
+
+.event {
+    margin-bottom: 50px;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 8px;
+}
+
+.event-name {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.event-time {
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.event-location,
+.event-description {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.event-description {
+    margin-bottom: 15px;
+}
+
+/* Stay Section */
+.stay-section {
+    padding: 100px 0;
+    text-align: center;
+}
+
+.stay-description {
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1px solid #1a1a1a;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: #1a1a1a;
+    color: #E8E4DC;
+}
+
+/* RSVP Section */
+.rsvp-section {
+    padding: 80px 0 100px;
+}
+
+.rsvp-banner {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 80px;
+    padding: 50px 0;
+}
+
+.rsvp-banner-content {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0px;
+    white-space: nowrap;
+    animation: marquee 80s linear infinite;
+    will-change: transform;
+}
+
+.rsvp-banner-content > * {
+    font-size: 24px;
+    font-style: italic;
+    letter-spacing: 4px;
+    display: inline-block;
+    animation: smoothWaveRsvp 3s ease-in-out infinite;
+    margin-right: 6px;
+}
+
+.rsvp-hand {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    animation: smoothWaveRsvp 3s ease-in-out infinite;
+    margin: 0 60px;
+}
+
+@keyframes smoothWaveRsvp {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-40px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.rsvp-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.rsvp-title {
+    font-size: 36px;
+    font-style: italic;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.rsvp-subtitle {
+    font-size: 15px;
+    margin-bottom: 50px;
+    line-height: 1.6;
+}
+
+/* Form Styles */
+.rsvp-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.5);
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.radio-group,
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radio-label,
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #1a1a1a;
+    color: #E8E4DC;
+    border: none;
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.submit-button:hover {
+    background-color: #333;
+}
+
+.submit-button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.form-message {
+    margin-top: 20px;
+    padding: 15px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+}
+
+.form-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.form-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+/* Footer */
+.footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer p {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.footer-rsvp {
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: 1px solid #1a1a1a;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.footer-rsvp:hover {
+    background-color: #1a1a1a;
+    color: #E8E4DC;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .invitation-section {
+        padding-top: 80px;
+        padding-bottom: 20px;
+    }
+    
+    .invitation-container {
+        padding: 10px;
+        max-width: 90%;
+    }
+    
+    .invitation-scroll-hint {
+        font-size: 12px;
+    }
+    
+    .hero-names {
+        font-size: 60px;
+    }
+    
+    .ampersand {
+        font-size: 45px;
+    }
+    
+    .section-title {
+        font-size: 40px;
+    }
+    
+    .schedule {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    
+    .container {
+        padding: 0 20px;
+    }
+    
+    .footer {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .banner-text,
+    .rsvp-text {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-names {
+        font-size: 48px;
+    }
+    
+    .section-title {
+        font-size: 32px;
+    }
+    
+    .day-title {
+        font-size: 24px;
+    }
+    
+    .rsvp-title {
+        font-size: 28px;
+    }
+}

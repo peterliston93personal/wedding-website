@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP Testing Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        .link-output {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+        .link-output.show {
+            display: block;
+        }
+        .generated-link {
+            word-break: break-all;
+            color: #0066cc;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .copy-button {
+            background-color: #4CAF50;
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 20px;
+        }
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+        .test-button {
+            background-color: #2196F3;
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 20px;
+            margin-left: 10px;
+        }
+        .test-button:hover {
+            background-color: #0b7dda;
+        }
+        .success-message {
+            color: #4CAF50;
+            margin-top: 10px;
+            display: none;
+        }
+        .success-message.show {
+            display: block;
+        }
+        .preset-guests {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .preset-guest {
+            padding: 8px 15px;
+            background-color: #e8e4dc;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .preset-guest:hover {
+            background-color: #d8d4cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 RSVP Link Generator</h1>
+        <p class="description">
+            Use this tool to generate personalized RSVP links for your wedding guests. 
+            Each link will pre-fill the guest's information when they click it.
+        </p>
+
+        <h3>Quick Test Links:</h3>
+        <div class="preset-guests">
+            <div class="preset-guest" onclick="fillPreset('john@example.com')">John & Jane Smith</div>
+            <div class="preset-guest" onclick="fillPreset('sarah@example.com')">Sarah Connor</div>
+            <div class="preset-guest" onclick="fillPreset('mike@example.com')">Mike & Lisa Brown</div>
+        </div>
+
+        <div class="form-group">
+            <label for="websiteUrl">Your Website URL:</label>
+            <input type="text" id="websiteUrl" placeholder="https://yourwebsite.com" value="https://peterliston93personal.github.io/wedding-website/">
+            <small style="color: #666; display: block; margin-top: 5px;">
+                Your wedding website URL. Use "index.html" for local testing.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="guestEmail">Guest Email Address:</label>
+            <input type="email" id="guestEmail" placeholder="guest@example.com" required>
+        </div>
+
+        <button onclick="generateLink()">Generate RSVP Link</button>
+
+        <div id="linkOutput" class="link-output">
+            <h3>Personalized RSVP Link:</h3>
+            <div class="generated-link" id="generatedLink"></div>
+            <button class="copy-button" onclick="copyLink()">📋 Copy Link</button>
+            <button class="test-button" onclick="openLink()">🔗 Open in Browser</button>
+            <div id="successMessage" class="success-message">✓ Link copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script>
+        function fillPreset(email) {
+            document.getElementById('guestEmail').value = email;
+            generateLink();
+        }
+
+        function generateLink() {
+            const websiteUrl = document.getElementById('websiteUrl').value.trim();
+            const guestEmail = document.getElementById('guestEmail').value.trim();
+            
+            if (!guestEmail) {
+                alert('Please enter a guest email address');
+                return;
+            }
+
+            const link = `${websiteUrl}?email=${encodeURIComponent(guestEmail)}`;
+            
+            document.getElementById('generatedLink').textContent = link;
+            document.getElementById('linkOutput').classList.add('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        function copyLink() {
+            const link = document.getElementById('generatedLink').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                document.getElementById('successMessage').classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('successMessage').classList.remove('show');
+                }, 3000);
+            });
+        }
+
+        function openLink() {
+            const link = document.getElementById('generatedLink').textContent;
+            window.open(link, '_blank');
+        }
+
+        // Generate link on Enter key
+        document.getElementById('guestEmail').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateLink();
+            }
+        });
+    </script>
+</body>
+</html>
