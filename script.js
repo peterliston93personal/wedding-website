@@ -1,3 +1,66 @@
+// =============================================
+// INVITATION LIGHTBOX
+// =============================================
+
+function openInvitationLightbox() {
+    const lb = document.getElementById('invitation-lightbox');
+    if (!lb) return;
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInvitationLightbox() {
+    const lb = document.getElementById('invitation-lightbox');
+    if (!lb) return;
+    lb.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Close lightbox with Escape key
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeInvitationLightbox();
+});
+
+// =============================================
+// END INVITATION LIGHTBOX
+// =============================================
+
+// =============================================
+// ENVELOPE OVERLAY
+// =============================================
+
+function openEnvelope() {
+    const overlay  = document.getElementById('envelope-overlay');
+    const wrapper  = overlay.querySelector('.envelope-wrapper');
+
+    // Prevent double-clicks
+    overlay.onclick = null;
+    wrapper.style.cursor = 'default';
+
+    // Step 1: flip closed → open
+    wrapper.classList.add('opening');
+
+    // Step 2: flip done — zoom in and hold
+    setTimeout(function () {
+        wrapper.classList.add('peeking');
+    }, 1000);
+
+    // Step 3: pause on open envelope, then fade out
+    setTimeout(function () {
+        overlay.classList.add('revealing');
+    }, 3200);
+
+    // Step 4: hide overlay and restore scrolling
+    setTimeout(function () {
+        overlay.classList.add('done');
+        document.body.classList.remove('overlay-active');
+    }, 5400);
+}
+
+// =============================================
+// END ENVELOPE OVERLAY
+// =============================================
+
 // Smooth scrolling for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -52,6 +115,29 @@ function duplicateBannerContent() {
 
 // Initialize banner duplication
 duplicateBannerContent();
+
+// Dynamic per-guest dietary fields
+const guestsInput = document.getElementById('guests');
+if (guestsInput) {
+    guestsInput.addEventListener('input', updateDietaryFields);
+    guestsInput.addEventListener('change', updateDietaryFields);
+}
+
+function updateDietaryFields() {
+    const container = document.getElementById('dietary-container');
+    if (!container) return;
+    const count = parseInt(document.getElementById('guests').value, 10);
+    container.innerHTML = '';
+    if (!count || count < 1) {
+        container.innerHTML = '<p class="dietary-hint">Enter the number of guests above to add dietary information per guest.</p>';
+        return;
+    }
+    for (let i = 1; i <= count; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'dietary-guest-row';
+        wrapper.innerHTML = `<label for="dietary_guest_${i}">Guest ${i}</label><input type="text" id="dietary_guest_${i}" name="dietary_guest_${i}" placeholder="Dietary requirements or allergies (or leave blank if none)">`;        container.appendChild(wrapper);
+    }
+}
 
 // RSVP Form Submission
 const form = document.getElementById('rsvpForm');
@@ -139,7 +225,16 @@ form.addEventListener('submit', async (e) => {
         phone: formData.get('phone') || 'Not provided',
         attending: formData.get('attending'),
         attendingCount: formData.get('guests'),
-        dietary: formData.get('dietary') || 'None',
+        dietary: (() => {
+            const dietaryInputs = document.querySelectorAll('[name^="dietary_guest"]');
+            if (dietaryInputs.length === 0) return 'None';
+            const parts = [];
+            dietaryInputs.forEach((input, i) => {
+                const val = input.value.trim();
+                parts.push(`Guest ${i + 1}: ${val || 'None'}`);
+            });
+            return parts.join(' | ');
+        })(),
         events: formData.getAll('events').join(', ') || 'None selected',
         message: formData.get('message') || 'No message'
     };
@@ -202,8 +297,8 @@ attendingRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
         const guestsField = document.getElementById('guests').parentElement;
         const eventsField = document.querySelector('.checkbox-group').parentElement;
-        const dietaryField = document.getElementById('dietary').parentElement;
-        
+        const dietaryField = document.getElementById('dietary-section');
+
         if (e.target.value === 'Sorry, can\'t make it') {
             guestsField.style.opacity = '0.5';
             eventsField.style.opacity = '0.5';
