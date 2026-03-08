@@ -977,6 +977,15 @@ body.overlay-active {
         padding-top: 80px;
         padding-bottom: 20px;
     }
+
+    .digital-invitation {
+        padding: 80px 20px 40px;
+    }
+
+    .invitation-crop {
+        margin-top: 0;
+        width: 90vw;
+    }
     
     .invitation-container {
         padding: 10px;
