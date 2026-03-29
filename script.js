@@ -256,19 +256,33 @@ function displayGroupSelector(groupMembers) {
 
 // Load form with specific guest's data
 function loadGuestForm(guestData) {
+    // Set name and email (hidden)
     document.getElementById('name').value = guestData.name;
     document.getElementById('name').setAttribute('readonly', true);
+    document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
     document.getElementById('email').value = guestData.email;
-    document.getElementById('guests').value = 1;  // Individual RSVP, not party size
-    document.getElementById('guests').max = 1;
-    
-    // Reset form fields
+
+    // Reset all form inputs
     document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
     document.querySelectorAll('input[name="events"]').forEach(c => c.checked = false);
+    document.getElementById('phone').value = '';
     document.getElementById('message').value = '';
-    
-    // Add visual styling to readonly name field
-    document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
+
+    // Reset dietary field
+    updateDietaryFields();
+
+    // Reset opacity on events and dietary sections in case they were dimmed
+    const eventsField = document.querySelector('.checkbox-group')?.parentElement;
+    const dietaryField = document.getElementById('dietary-section');
+    if (eventsField) eventsField.style.opacity = '1';
+    if (dietaryField) dietaryField.style.opacity = '1';
+
+    // Hide any previous success/error message
+    const formMessage = document.getElementById('formMessage');
+    if (formMessage) formMessage.style.display = 'none';
+
+    // Scroll to top of form
+    document.getElementById('rsvpForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Initialize form on page load
