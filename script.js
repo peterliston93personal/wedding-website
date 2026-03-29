@@ -259,7 +259,6 @@ function loadGuestForm(guestData) {
     document.getElementById('name').value = guestData.name;
     document.getElementById('name').setAttribute('readonly', true);
     document.getElementById('email').value = guestData.email;
-    document.getElementById('email').setAttribute('readonly', true);
     document.getElementById('guests').value = 1;  // Individual RSVP, not party size
     document.getElementById('guests').max = 1;
     
@@ -268,9 +267,8 @@ function loadGuestForm(guestData) {
     document.querySelectorAll('input[name="events"]').forEach(c => c.checked = false);
     document.getElementById('message').value = '';
     
-    // Add visual styling to readonly fields
+    // Add visual styling to readonly name field
     document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
-    document.getElementById('email').style.backgroundColor = 'rgba(0,0,0,0.05)';
 }
 
 // Initialize form on page load
