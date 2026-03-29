@@ -269,7 +269,6 @@ function loadGuestForm(guestData) {
     // Reset all form inputs
     document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
     document.querySelectorAll('input[name="events"]').forEach(c => c.checked = false);
-    document.getElementById('phone').value = '';
     document.getElementById('message').value = '';
 
     // Reset dietary field
@@ -284,9 +283,6 @@ function loadGuestForm(guestData) {
     // Hide any previous success/error message
     const formMessage = document.getElementById('formMessage');
     if (formMessage) formMessage.style.display = 'none';
-
-    // Scroll to top of form
-    document.getElementById('rsvpForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Initialize form on page load
@@ -316,7 +312,7 @@ form.addEventListener('submit', async (e) => {
         timestamp: new Date().toISOString(),
         email: formData.get('email'),
         name: formData.get('name'),
-        phone: formData.get('phone') || 'Not provided',
+        phone: 'Not provided',
         attending: formData.get('attending'),
         attendingCount: 1,  // Individual RSVP
         dietary: document.getElementById('dietary-guest-1')?.value || 'None',
