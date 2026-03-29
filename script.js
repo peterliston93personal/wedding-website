@@ -295,6 +295,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const guestsField = document.getElementById('guests');
     if (guestsField) {
         guestsField.parentElement.style.display = 'none';
+        guestsField.required = false;
+        guestsField.disabled = true;
     }
     
     // Initialize dietary field
