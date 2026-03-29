@@ -132,6 +132,9 @@ function updateDietaryFields() {
 const form = document.getElementById('rsvpForm');
 const formMessage = document.getElementById('formMessage');
 
+// Stores the current group so resetFormForNextPerson can call loadGuestForm directly
+let currentGroupMembers = [];
+
 // Configuration for Google Sheets
 // INSTRUCTIONS: Replace this URL with your Google Apps Script Web App URL
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwziGBKceyK9n91AjYmPaX6jMr5YA_7hWKn2wPPJ2iSbfLgoagMQEv7Svp_Li-GQM8k/exec';
@@ -203,7 +206,8 @@ async function preFillForm() {
     const groupMembers = await fetchGroupMembers(email);
     
     if (groupMembers && groupMembers.length > 1) {
-        // Multiple people in group - show selector
+        // Multiple people in group - store and show selector
+        currentGroupMembers = groupMembers;
         displayGroupSelector(groupMembers);
         document.querySelector('.rsvp-subtitle').innerHTML = 
             'Select who you\'d like to RSVP for, then complete the form for that person.';
@@ -364,22 +368,28 @@ form.addEventListener('submit', async (e) => {
 function resetFormForNextPerson() {
     const selectorSection = document.getElementById('group-selector-section');
     const selectorRadios = document.querySelectorAll('input[name="group-member"]');
-    
+
     if (selectorSection.style.display === 'block' && selectorRadios.length > 1) {
-        // Find first unchecked radio and select it
-        let nextIndex = -1;
+        // Find the index of the currently selected radio
+        let currentIndex = -1;
         selectorRadios.forEach((radio, i) => {
-            if (radio.checked && nextIndex === -1) {
-                nextIndex = i + 1;
-            }
+            if (radio.checked) currentIndex = i;
         });
-        
+
+        const nextIndex = currentIndex + 1;
+
         if (nextIndex < selectorRadios.length) {
-            selectorRadios[nextIndex].click();
+            // Select the next radio button visually
+            selectorRadios[nextIndex].checked = true;
+
+            // Directly call loadGuestForm with the next member's data
+            const nextMember = currentGroupMembers[nextIndex];
+            if (nextMember) {
+                loadGuestForm(nextMember);
+            }
         } else {
-            // All done
+            // All group members done
             showMessage('All RSVPs for your group have been submitted! Thank you!', 'success');
-            // Scroll back to selector so they can verify
             selectorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
