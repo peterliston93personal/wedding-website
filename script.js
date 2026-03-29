@@ -54,6 +54,9 @@ function openEnvelope() {
     setTimeout(function () {
         overlay.classList.add('done');
         document.body.classList.remove('overlay-active');
+        document.body.classList.add('site-revealed');
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        updateNavbarState();
     }, 5400);
 }
 
@@ -79,38 +82,32 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 function duplicateBannerContent() {
     const banner = document.querySelector('.banner');
     const rsvpBanner = document.querySelector('.rsvp-banner-content');
-    
-    if (banner) {
-        const bannerContent = banner.innerHTML;
+    const wgmBanner = document.querySelector('.wgm-banner-content');
+
+    function prepareBanner(element, spaceMarginRight) {
+        if (!element || element.dataset.duplicated === 'true') {
+            return;
+        }
+
+        const content = element.innerHTML;
         // Create 3 more copies (4 total) to ensure smooth infinite scrolling
-        banner.innerHTML = bannerContent + bannerContent + bannerContent + bannerContent;
-        
+        element.innerHTML = content + content + content + content;
+        element.dataset.duplicated = 'true';
+
         // Apply staggered animation delays to ALL characters (including duplicates)
-        const allChars = banner.querySelectorAll('span, img');
+        const allChars = element.querySelectorAll('span, img');
         allChars.forEach((char, index) => {
             char.style.animationDelay = `${-0.05 * index}s`;
             // Add extra margin to space characters for clear word separation
             if (char.tagName === 'SPAN' && char.textContent === ' ') {
-                char.style.marginRight = '25px';
+                char.style.marginRight = spaceMarginRight;
             }
         });
     }
-    
-    if (rsvpBanner) {
-        const rsvpContent = rsvpBanner.innerHTML;
-        // Create 3 more copies (4 total) to ensure smooth infinite scrolling
-        rsvpBanner.innerHTML = rsvpContent + rsvpContent + rsvpContent + rsvpContent;
-        
-        // Apply staggered animation delays to ALL characters (including duplicates)
-        const allChars = rsvpBanner.querySelectorAll('span, img');
-        allChars.forEach((char, index) => {
-            char.style.animationDelay = `${-0.05 * index}s`;
-            // Add extra margin to space characters for clear word separation
-            if (char.tagName === 'SPAN' && char.textContent === ' ') {
-                char.style.marginRight = '30px';
-            }
-        });
-    }
+
+    prepareBanner(banner, '25px');
+    prepareBanner(rsvpBanner, '30px');
+    prepareBanner(wgmBanner, '30px');
 }
 
 // Initialize banner duplication
@@ -126,17 +123,9 @@ if (guestsInput) {
 function updateDietaryFields() {
     const container = document.getElementById('dietary-container');
     if (!container) return;
-    const count = parseInt(document.getElementById('guests').value, 10);
-    container.innerHTML = '';
-    if (!count || count < 1) {
-        container.innerHTML = '<p class="dietary-hint">Enter the number of guests above to add dietary information per guest.</p>';
-        return;
-    }
-    for (let i = 1; i <= count; i++) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'dietary-guest-row';
-        wrapper.innerHTML = `<label for="dietary_guest_${i}">Guest ${i}</label><input type="text" id="dietary_guest_${i}" name="dietary_guest_${i}" placeholder="Dietary requirements or allergies (or leave blank if none)">`;        container.appendChild(wrapper);
-    }
+    
+    // In group mode, always show single dietary field
+    container.innerHTML = '<input type="text" id="dietary-guest-1" name="dietary-guest-1" placeholder="Dietary requirements or allergies (or leave blank if none)">';
 }
 
 // RSVP Form Submission
@@ -169,6 +158,22 @@ async function fetchGuestData(email) {
     }
 }
 
+// Fetch all group members for a given email
+async function fetchGroupMembers(email) {
+    if (!email || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+        return null;
+    }
+    
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGroup&email=${encodeURIComponent(email)}`);
+        const data = await response.json();
+        return data.found ? data.group : null;
+    } catch (error) {
+        console.error('Error fetching group members:', error);
+        return null;
+    }
+}
+
 // Pre-fill form with guest data
 async function preFillForm() {
     const email = getEmailFromURL();
@@ -183,34 +188,105 @@ async function preFillForm() {
     // Show loading state
     document.querySelector('.rsvp-subtitle').innerHTML = 'Loading your invitation...';
     
+    // Fetch primary guest data to verify email
     const guestData = await fetchGuestData(email);
     
-    if (guestData) {
-        // Pre-fill form fields
-        document.getElementById('name').value = guestData.name;
-        document.getElementById('name').setAttribute('readonly', true);
-        document.getElementById('email').value = guestData.email;
-        document.getElementById('email').setAttribute('readonly', true);
-        document.getElementById('guests').value = guestData.partySize;
-        document.getElementById('guests').max = guestData.partySize;
-        
-        // Update subtitle
-        document.querySelector('.rsvp-subtitle').innerHTML = 
-            `Welcome ${guestData.name}! Please complete your RSVP for ${guestData.partySize} guest${guestData.partySize > 1 ? 's' : ''}.`;
-        
-        // Add visual styling to readonly fields
-        document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
-        document.getElementById('email').style.backgroundColor = 'rgba(0,0,0,0.05)';
-    } else {
+    if (!guestData) {
         // Guest not found
         document.querySelector('.rsvp-subtitle').innerHTML = 
             'We couldn\'t find your invitation. Please check your email link or contact us for assistance.';
         showMessage('Unable to load your invitation. Please use the link from your email or contact us.', 'error');
+        return;
+    }
+    
+    // Fetch all group members
+    const groupMembers = await fetchGroupMembers(email);
+    
+    if (groupMembers && groupMembers.length > 1) {
+        // Multiple people in group - show selector
+        displayGroupSelector(groupMembers);
+        document.querySelector('.rsvp-subtitle').innerHTML = 
+            'Select who you\'d like to RSVP for, then complete the form for that person.';
+    } else {
+        // Single person - load their form directly
+        document.querySelector('.rsvp-subtitle').innerHTML = 
+            `Welcome ${guestData.name}! Please complete your RSVP.`;
+        loadGuestForm(guestData);
     }
 }
 
+// Display group member radio buttons
+function displayGroupSelector(groupMembers) {
+    const selectorSection = document.getElementById('group-selector-section');
+    const selectorContainer = document.getElementById('group-selector');
+    
+    selectorContainer.innerHTML = '';
+    groupMembers.forEach((member, index) => {
+        const label = document.createElement('label');
+        label.className = 'radio-label';
+        
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'group-member';
+        radio.value = member.name;
+        radio.dataset.email = member.email;
+        if (index === 0) radio.checked = true;
+        
+        const span = document.createElement('span');
+        span.textContent = member.name;
+        
+        label.appendChild(radio);
+        label.appendChild(span);
+        selectorContainer.appendChild(label);
+        
+        // Add change listener to load form for selected member
+        radio.addEventListener('change', () => {
+            // Find member in group and load their data
+            const selectedMember = groupMembers.find(m => m.name === radio.value);
+            if (selectedMember) {
+                loadGuestForm(selectedMember);
+            }
+        });
+    });
+    
+    // Show selector and load first member's form
+    selectorSection.style.display = 'block';
+    loadGuestForm(groupMembers[0]);
+}
+
+// Load form with specific guest's data
+function loadGuestForm(guestData) {
+    document.getElementById('name').value = guestData.name;
+    document.getElementById('name').setAttribute('readonly', true);
+    document.getElementById('email').value = guestData.email;
+    document.getElementById('email').setAttribute('readonly', true);
+    document.getElementById('guests').value = 1;  // Individual RSVP, not party size
+    document.getElementById('guests').max = 1;
+    
+    // Reset form fields
+    document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[name="events"]').forEach(c => c.checked = false);
+    document.getElementById('message').value = '';
+    
+    // Add visual styling to readonly fields
+    document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
+    document.getElementById('email').style.backgroundColor = 'rgba(0,0,0,0.05)';
+}
+
 // Initialize form on page load
-window.addEventListener('DOMContentLoaded', preFillForm);
+window.addEventListener('DOMContentLoaded', () => {
+    // Hide the "Number of Guests" field since we're doing individual RSVPs now
+    const guestsField = document.getElementById('guests');
+    if (guestsField) {
+        guestsField.parentElement.style.display = 'none';
+    }
+    
+    // Initialize dietary field
+    updateDietaryFields();
+    
+    // Load guest data
+    preFillForm();
+});
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -224,17 +300,8 @@ form.addEventListener('submit', async (e) => {
         name: formData.get('name'),
         phone: formData.get('phone') || 'Not provided',
         attending: formData.get('attending'),
-        attendingCount: formData.get('guests'),
-        dietary: (() => {
-            const dietaryInputs = document.querySelectorAll('[name^="dietary_guest"]');
-            if (dietaryInputs.length === 0) return 'None';
-            const parts = [];
-            dietaryInputs.forEach((input, i) => {
-                const val = input.value.trim();
-                parts.push(`Guest ${i + 1}: ${val || 'None'}`);
-            });
-            return parts.join(' | ');
-        })(),
+        attendingCount: 1,  // Individual RSVP
+        dietary: document.getElementById('dietary-guest-1')?.value || 'None',
         events: formData.getAll('events').join(', ') || 'None selected',
         message: formData.get('message') || 'No message'
     };
@@ -250,6 +317,7 @@ form.addEventListener('submit', async (e) => {
             // For testing purposes - show success message
             console.log('RSVP Data:', data);
             showMessage('Thank you for your RSVP! Your response has been recorded. (Note: Google Sheets integration needs to be set up)', 'success');
+            resetFormForNextPerson();
         } else {
             // Send data to Google Sheets
             const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -266,6 +334,9 @@ form.addEventListener('submit', async (e) => {
                 'We can\'t wait to celebrate with you!' : 
                 'We\'ll miss you but thanks for letting us know.';
             showMessage(`Thank you for your RSVP! ${attendingText}`, 'success');
+            
+            // Reset form for next person after a short delay
+            setTimeout(resetFormForNextPerson, 2000);
         }
     } catch (error) {
         console.error('Error submitting form:', error);
@@ -276,6 +347,31 @@ form.addEventListener('submit', async (e) => {
         submitButton.textContent = 'Submit RSVP';
     }
 });
+
+// Reset form to select next person in group
+function resetFormForNextPerson() {
+    const selectorSection = document.getElementById('group-selector-section');
+    const selectorRadios = document.querySelectorAll('input[name="group-member"]');
+    
+    if (selectorSection.style.display === 'block' && selectorRadios.length > 1) {
+        // Find first unchecked radio and select it
+        let nextIndex = -1;
+        selectorRadios.forEach((radio, i) => {
+            if (radio.checked && nextIndex === -1) {
+                nextIndex = i + 1;
+            }
+        });
+        
+        if (nextIndex < selectorRadios.length) {
+            selectorRadios[nextIndex].click();
+        } else {
+            // All done
+            showMessage('All RSVPs for your group have been submitted! Thank you!', 'success');
+            // Scroll back to selector so they can verify
+            selectorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+}
 
 function showMessage(message, type) {
     formMessage.textContent = message;
@@ -295,35 +391,38 @@ function showMessage(message, type) {
 const attendingRadios = document.querySelectorAll('input[name="attending"]');
 attendingRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
-        const guestsField = document.getElementById('guests').parentElement;
-        const eventsField = document.querySelector('.checkbox-group').parentElement;
+        const eventsField = document.querySelector('.checkbox-group')?.parentElement;
         const dietaryField = document.getElementById('dietary-section');
 
         if (e.target.value === 'Sorry, can\'t make it') {
-            guestsField.style.opacity = '0.5';
-            eventsField.style.opacity = '0.5';
-            dietaryField.style.opacity = '0.5';
-            document.getElementById('guests').required = false;
+            if (eventsField) eventsField.style.opacity = '0.5';
+            if (dietaryField) dietaryField.style.opacity = '0.5';
+            // Don't require events/dietary if not attending
+            document.querySelectorAll('input[name="events"]').forEach(c => c.required = false);
         } else {
-            guestsField.style.opacity = '1';
-            eventsField.style.opacity = '1';
-            dietaryField.style.opacity = '1';
-            document.getElementById('guests').required = true;
+            if (eventsField) eventsField.style.opacity = '1';
+            if (dietaryField) dietaryField.style.opacity = '1';
         }
     });
 });
 
-// Navbar background opacity on scroll
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
+function updateNavbarState() {
     const navbar = document.querySelector('.navbar');
+    const landingMenu = document.getElementById('landing-menu');
+    if (!navbar || !landingMenu) return;
+
+    const threshold = landingMenu.offsetHeight - 120;
     const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 100) {
+
+    if (currentScroll > threshold) {
+        navbar.classList.add('scrolled');
         navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
     } else {
+        navbar.classList.remove('scrolled');
         navbar.style.boxShadow = 'none';
     }
-    
-    lastScroll = currentScroll;
-});
+}
+
+window.addEventListener('scroll', updateNavbarState);
+window.addEventListener('resize', updateNavbarState);
+window.addEventListener('load', updateNavbarState);

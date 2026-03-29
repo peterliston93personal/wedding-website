@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peter & Tara's Wedding - September 18, 2026</title>
-    <link rel="stylesheet" href="styles.css?v=20260308-FIX24">
+    <link rel="stylesheet" href="styles.css?v=20260329-GROUP-RSVP">
 </head>
 <body class="overlay-active">
 
@@ -14,7 +14,7 @@
             <img
                 id="envelopeClosed"
                 class="envelope-img envelope-closed"
-                src="images/TP_WEDDING_INVITATION_WORKING_FILE_alt_07_Placeholder_closed_env.png"
+                src="images/TP_WEDDING_INVITATION_WORKING_FILE_alt_07_envenvelope for email.png"
                 alt="Closed envelope"
             >
             <img
@@ -26,64 +26,44 @@
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-brand">Peter & Tara's Wedding</div>
-        <div class="nav-links">
-            <a href="#weekend">THE WEEKEND</a>
-            <a href="#stay">WHERE TO STAY</a>
-            <a href="#faq">FAQS</a>
-            <a href="#rsvp" class="rsvp-button">RSVP</a>
-        </div>
-    </nav>
-
-    <!-- Digital Invitation Section -->
-    <section class="digital-invitation">
-        <div class="invitation-container">
-            <div class="invitation-crop" onclick="openInvitationLightbox()">
-                <img src="images/Invitation-final.png?v=2" alt="Peter & Tara's Wedding Invitation" class="invitation-image">
+    <!-- Top Artwork -->
+    <section id="landing-menu" class="landing-menu">
+        <div class="landing-menu-inner">
+            <div class="landing-banner-wrap">
+                <img
+                    class="landing-banner"
+                    src="images/TP_WEDDING_INVITATION_WORKING_FILE_alt_07_AllElements_crop.png"
+                    alt="Peter and Tara wedding invitation artwork"
+                    fetchpriority="high"
+                    decoding="async"
+                >
+                <a class="landing-hotspot hotspot-envelope" href="#main-page-start" aria-label="Go to the top of the main page"></a>
+                <a class="landing-hotspot hotspot-details" href="#weekend" aria-label="Go to The Weekend"></a>
+                <a class="landing-hotspot hotspot-card" href="#main-page-start" aria-label="Go to the top of the main page"></a>
+                <a class="landing-hotspot hotspot-rsvp" href="#rsvp" aria-label="Go to RSVP"></a>
             </div>
-            <span class="zoom-hint">Click to zoom</span>
-            <div class="scroll-hint">
-                <span>Scroll to RSVP</span>
-                <span class="scroll-arrow">↓</span>
-            </div>
+            <p class="landing-hint">Click the cards to navigate, or scroll to continue</p>
         </div>
     </section>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <p class="hero-subtitle">WE'RE GETTING<br>MARRIED</p>
-            <h1 class="hero-names">
-                Peter<br>
-                <span class="ampersand">&</span><br>
-                Tara
-            </h1>
-            <p class="hero-details">
-                <span class="hero-date">18 • 09 • 26</span><br>
-                <span class="hero-venue">DUNMORE HOUSE</span>
-            </p>
+    <!-- We're Getting Married Banner -->
+    <div id="main-page-start" class="wgm-banner">
+        <div class="wgm-banner-content">
+            <span>W</span><span>e</span><span>'</span><span>r</span><span>e</span><span> </span><span>G</span><span>e</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span> </span><span>M</span><span>a</span><span>r</span><span>r</span><span>i</span><span>e</span><span>d</span><span> </span>
+            <img src="Links/TP_WEDDING_WEBSITE_HEART-02.svg" alt="heart" class="wgm-heart">
         </div>
-        
-        <!-- Decorative Banner -->
-        <div class="banner-container">
-            <div class="banner">
-                <span>W</span><span>e</span><span>'</span><span>r</span><span>e</span><span> </span><span>G</span><span>e</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span> </span><span>M</span><span>a</span><span>r</span><span>r</span><span>i</span><span>e</span><span>d</span><span> </span>
-                <img src="Links/TP_WEDDING_WEBSITE_HEART-02.svg" alt="heart" class="banner-heart">
-                <span> </span><span>W</span><span>e</span><span>'</span><span>r</span><span>e</span><span> </span><span>G</span><span>e</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span> </span><span>M</span><span>a</span><span>r</span><span>r</span><span>i</span><span>e</span><span>d</span><span> </span>
-                <img src="Links/TP_WEDDING_WEBSITE_HEART-02.svg" alt="heart" class="banner-heart">
-                <span> </span><span>W</span><span>e</span><span>'</span><span>r</span><span>e</span><span> </span><span>G</span><span>e</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span> </span><span>M</span><span>a</span><span>r</span><span>r</span><span>i</span><span>e</span><span>d</span><span> </span>
-                <img src="Links/TP_WEDDING_WEBSITE_HEART-02.svg" alt="heart" class="banner-heart">
-                <span> </span><span>W</span><span>e</span><span>'</span><span>r</span><span>e</span><span> </span><span>G</span><span>e</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span> </span><span>M</span><span>a</span><span>r</span><span>r</span><span>i</span><span>e</span><span>d</span><span> </span>
-                <img src="Links/TP_WEDDING_WEBSITE_HEART-02.svg" alt="heart" class="banner-heart">
-            </div>
-        </div>
+    </div>
 
-        <!-- Introduction Text -->
-        <div class="intro-text">
-            <p>Join us as we celebrate this new chapter in our lives together. You can find our full weekend schedule and all the essential details below. We hope to see you there!</p>
-        </div>
+    <section class="between-message" aria-label="Welcome message">
+        <img class="between-star between-star-top" src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Star01.png" alt="" aria-hidden="true">
+        <img class="between-star between-star-bottom" src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Star02.png" alt="" aria-hidden="true">
+        <p>Join us as we celebrate this new chapter in our lives together.</p>
+        <p>You can find our full weekend schedule and all the essential details below.</p>
+        <p>We hope to see you there!</p>
+    </section>
+
+    <section class="between-illustration" aria-label="Weekend illustration">
+        <img src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Glasses.png" alt="Illustration of two glasses">
     </section>
 
     <!-- The Weekend Section -->
@@ -94,7 +74,10 @@
             <div class="schedule">
                 <!-- Friday -->
                 <div class="day-schedule">
-                    <h3 class="day-title">Friday 18<sup>th</sup></h3>
+                    <div class="day-heading">
+                        <h3 class="day-title">Friday</h3>
+                        <p class="day-date">18 September 2026</p>
+                    </div>
 
                     <div class="event">
                         <div class="event-header">
@@ -115,7 +98,10 @@
                 
                 <!-- Saturday -->
                 <div class="day-schedule">
-                    <h3 class="day-title">Saturday 19<sup>th</sup></h3>
+                    <div class="day-heading">
+                        <h3 class="day-title">Saturday</h3>
+                        <p class="day-date">19 September 2026</p>
+                    </div>
                     
                     <div class="event">
                         <div class="event-header">
@@ -126,18 +112,27 @@
                         <p class="event-note">Location TBC</p>
                     </div>
                     
-                    <div class="event">
-                        <div class="event-header">
-                            <span class="event-name">DAY TWO @ CASEYS</span>
-                            <span class="event-time">5 PM</span>
+                    <div class="event event-day-two">
+                        <div class="event-day-two-layout">
+                            <img
+                                class="event-day-two-illustration"
+                                src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Guinness.png"
+                                alt="Guinness glass illustration"
+                            >
+                            <div class="event-day-two-copy">
+                                <div class="event-header">
+                                    <span class="event-name">DAY TWO @ CASEYS</span>
+                                    <span class="event-time">5 PM</span>
+                                </div>
+                                <p class="event-description">
+                                    Please join us to continue the celebrations with food, drinks and live music.
+                                </p>
+                                <p class="event-location">
+                                    Caseys Bar,<br>
+                                    Clonakilty, Co. Cork
+                                </p>
+                            </div>
                         </div>
-                        <p class="event-description">
-                            Please join us to continue the celebrations with food, drinks and live music.
-                        </p>
-                        <p class="event-location">
-                            Caseys Bar,<br>
-                            Clonakilty, Co. Cork
-                        </p>
                     </div>
                 </div>
             </div>
@@ -147,7 +142,12 @@
     <!-- Where to Stay Section -->
     <section id="stay" class="stay-section">
         <div class="container">
-            <h2 class="section-title">Where to stay</h2>
+            <div class="stay-illustration">
+                <img src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Accomodation.png" alt="Accommodation illustration">
+            </div>
+            <h2 class="section-title">Where to Stay</h2>
+
+            <p class="stay-intro">There is a limited number of rooms in Dunmore House Hotel which are filled. We have organised a 16-seater bus from 11pm until 3am to bring guests back to Clonakilty. If you are staying outside Clonakilty, please let us know and we will do our best to accommodate transport.</p>
 
             <div class="hotel-list">
 
@@ -155,7 +155,7 @@
                     <h3 class="hotel-name">Clonakilty Park Hotel</h3>
                     <p class="hotel-info">We have reserved a limited number of rooms in Clonakilty Park for our guests. Please contact the hotel and quote the <strong>Power &amp; Liston</strong> wedding when making a reservation. Standard B&amp;B rates apply. There are a limited number of 2-bedroom apartments available which are not detailed on their website.</p>
                     <p class="hotel-contact">
-                        <a href="tel:02388364000">&#128222; 023 883 6400</a><br>
+                        <a href="tel:02388364000">&#9742; 023 883 6400</a><br>
                         <a href="https://www.clonakiltyparkhotel.ie/" target="_blank">clonakiltyparkhotel.ie</a>
                     </p>
                 </div>
@@ -163,7 +163,7 @@
                 <div class="hotel-card">
                     <h3 class="hotel-name">Emmet Hotel</h3>
                     <p class="hotel-contact">
-                        <a href="tel:02388333940">&#128222; 023 883 3394</a><br>
+                        <a href="tel:02388333940">&#9742; 023 883 3394</a><br>
                         <a href="https://www.emmethotel.com/" target="_blank">emmethotel.com</a>
                     </p>
                 </div>
@@ -171,14 +171,12 @@
                 <div class="hotel-card">
                     <h3 class="hotel-name">An S&uacute;g&aacute;n Guesthouse</h3>
                     <p class="hotel-contact">
-                        <a href="tel:02388337190">&#128222; 023 883 3719</a><br>
+                        <a href="tel:02388337190">&#9742; 023 883 3719</a><br>
                         <a href="https://www.ansugan.com/" target="_blank">ansugan.com</a>
                     </p>
                 </div>
 
             </div>
-
-            <p class="stay-footer">There is a limited number of rooms in Dunmore House Hotel which are filled. We have organised a 16-seater bus from 11pm until 3am to bring guests back to Clonakilty. If you are staying outside Clonakilty, please let us know and we will do our best to accommodate transport.</p>
             <p class="stay-footer">There are plenty of other options available on <a href="https://www.booking.com" target="_blank">Booking.com</a> or <a href="https://www.airbnb.com" target="_blank">Airbnb</a> for all requirements.</p>
         </div>
     </section>
@@ -201,12 +199,24 @@
                 <img src="Links/TP_WEDDING_WEBSITE_HAND-01.svg" alt="hand" class="rsvp-hand">
             </div>
         </div>
+
+        <div class="rsvp-illustration">
+            <img src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_LoveBirds.png" alt="Love birds illustration">
+        </div>
         
         <div class="container">
             <div class="rsvp-form-container">
                 <h2 class="rsvp-title">We'd love to celebrate with you!</h2>
                 <p class="rsvp-subtitle">Please let us know if you can join us by filling out the form below.</p>
                 <p class="rsvp-deadline">Please RSVP by the 18th of July.</p>
+                
+                <!-- Group Member Selector (shown if party size > 1) -->
+                <div id="group-selector-section" class="form-group" style="display:none;">
+                    <label>Who are you RSVPing for? *</label>
+                    <div id="group-selector" class="radio-group">
+                        <!-- Radio buttons will be populated by JavaScript -->
+                    </div>
+                </div>
                 
                 <form id="rsvpForm" class="rsvp-form">
                     <div class="form-group">
@@ -284,6 +294,7 @@
     <section id="faq" class="faq-section">
         <div class="container">
             <h2 class="section-title">FAQs</h2>
+            <img class="faq-flower" src="illustrations/TP_WEDDING_WEBSITE_ILLUSTRATIONS_Flowers.png" alt="Decorative flower illustration">
             <div class="faq-list">
 
                 <div class="faq-item">
@@ -312,6 +323,8 @@
                 </div>
 
             </div>
+
+            <a class="back-to-top" href="#landing-menu">Back to the top</a>
         </div>
     </section>
 

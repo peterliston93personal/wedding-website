@@ -41,16 +41,29 @@
     box-sizing: border-box;
 }
 
+:root {
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-display: 'Source Serif 4', Georgia, serif;
+    --font-ui: 'Source Serif 4', Georgia, serif;
+    --ink: #1a1a1a;
+    --ink-soft: #2f2c27;
+    --paper: #E8E4DC;
+    --content-max: 620px;
+    --label-tracking: 2.6px;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Source Serif 4', serif;
-    background-color: #E8E4DC;
-    color: #1a1a1a;
+    font-family: var(--font-body);
+    background-color: var(--paper);
+    color: var(--ink);
     line-height: 1.6;
     overflow-x: clip;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 body.overlay-active {
@@ -81,7 +94,7 @@ body.overlay-active {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background-color: #E8E4DC;
+    background-color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -151,12 +164,20 @@ body.overlay-active {
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(232, 228, 220, 0.95);
+    background-color: rgba(0, 0, 0, 0.45);
+    color: #f3efe7;
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+.navbar.scrolled {
+    background-color: rgba(232, 228, 220, 0.95);
+    color: #1a1a1a;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -398,7 +419,7 @@ body.overlay-active {
 
 .nav-links a {
     text-decoration: none;
-    color: #1a1a1a;
+    color: inherit;
     font-size: 11px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -411,15 +432,111 @@ body.overlay-active {
 }
 
 .rsvp-button {
-    border: 1px solid #1a1a1a;
+    border: 1px solid currentColor;
     padding: 8px 20px;
     transition: all 0.3s ease;
 }
 
 .rsvp-button:hover {
-    background-color: #1a1a1a;
+    background-color: currentColor;
     color: #E8E4DC;
     opacity: 1;
+}
+
+/* Landing Collage Navigation */
+.landing-menu {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100svh;
+    padding: 0;
+    overflow: hidden;
+}
+
+.landing-menu-inner {
+    width: 100%;
+    max-width: 760px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.landing-banner-wrap {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+}
+
+.landing-banner {
+    width: auto;
+    max-width: min(88vw, 520px);
+    max-height: calc(100svh - 70px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: none;
+    border-radius: 0;
+}
+
+.landing-hotspot {
+    position: absolute;
+    display: block;
+    z-index: 2;
+}
+
+.landing-hotspot:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.95);
+    outline-offset: 2px;
+}
+
+/* Hotspot map for _crop.png (2160x3250, content starts ~y=120) */
+.hotspot-envelope {
+    left: 4%;
+    top: 4%;
+    width: 79%;
+    height: 46%;
+}
+
+.hotspot-details {
+    left: 4%;
+    top: 46%;
+    width: 42%;
+    height: 26%;
+}
+
+.hotspot-card {
+    left: 39%;
+    top: 31%;
+    width: 56%;
+    height: 50%;
+}
+
+.hotspot-rsvp {
+    left: 6%;
+    top: 64%;
+    width: 50%;
+    height: 25%;
+}
+
+.landing-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 14px 0 0;
+    flex-shrink: 0;
+    animation: hintFade 3s ease-in-out infinite;
+}
+
+@keyframes hintFade {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.85; }
 }
 
 /* Digital Invitation Section */
@@ -595,6 +712,91 @@ body.overlay-active {
     line-height: 1.8;
 }
 
+/* We're Getting Married Banner */
+.wgm-banner {
+    width: 100%;
+    overflow: hidden;
+    background-color: #E8E4DC;
+    padding: 72px 0 50px;
+}
+
+.wgm-banner-content {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0px;
+    white-space: nowrap;
+    animation: marquee 27.5s linear infinite;
+    will-change: transform;
+}
+
+.wgm-banner-content > * {
+    font-size: 22px;
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 4px;
+    display: inline-block;
+    animation: smoothWaveRsvp 3s ease-in-out infinite;
+    margin-right: 6px;
+    color: #1a1a1a;
+}
+
+.wgm-heart {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    animation: smoothWaveRsvp 3s ease-in-out infinite;
+    margin: 0 60px;
+}
+
+.between-message {
+    position: relative;
+    background-color: #E8E4DC;
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 74px 48px;
+}
+
+.between-star {
+    position: absolute;
+    width: clamp(56px, 8vw, 110px);
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+}
+
+.between-star-top {
+    top: 8px;
+    right: 18px;
+}
+
+.between-star-bottom {
+    bottom: 10px;
+    left: 16px;
+}
+
+.between-message p {
+    font-size: clamp(30px, 4.2vw, 48px);
+    line-height: 1.15;
+    margin-bottom: 16px;
+}
+
+.between-message p:last-child {
+    margin-bottom: 0;
+}
+
+.between-illustration {
+    background-color: #E8E4DC;
+    text-align: center;
+    padding: 8px 20px 18px;
+}
+
+.between-illustration img {
+    width: min(360px, 62vw);
+    height: auto;
+    display: inline-block;
+}
+
 .intro-text p {
     margin-bottom: 10px;
 }
@@ -606,152 +808,272 @@ body.overlay-active {
     padding: 0 40px;
 }
 
+.weekend-section .container,
+.stay-section .container,
+.faq-section .container,
+.rsvp-section .container {
+    max-width: 760px;
+}
+
 /* Section Titles */
 .section-title {
+    font-family: var(--font-display);
     font-size: 60px;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: 0.2px;
     margin-bottom: 60px;
 }
 
 /* Weekend Section */
 .weekend-section {
-    padding: 100px 0;
+    padding: 34px 0 26px;
+    background-color: #E8E4DC;
+}
+
+.weekend-section .container {
+    max-width: 760px;
+}
+
+.weekend-section .section-title {
+    font-size: clamp(68px, 10vw, 96px);
+    line-height: 0.92;
+    text-align: left;
+    margin-bottom: 0;
 }
 
 .schedule {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    margin-top: 70px;
+    max-width: var(--content-max);
+    margin: 34px auto 0;
 }
 
-.day-schedule:first-child {
-    padding-right: 70px;
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.day-schedule:last-child {
-    padding-left: 70px;
+.day-heading {
+    margin-bottom: 30px;
 }
 
 .day-title {
-    font-size: 32px;
+    font-size: clamp(42px, 7vw, 56px);
     font-style: italic;
     font-weight: 400;
+    line-height: 0.96;
     margin-bottom: 8px;
 }
 
-
-.event {
-    margin-bottom: 40px;
+.day-date {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: var(--label-tracking);
+    text-transform: uppercase;
+    color: #3a3732;
+    line-height: 1.4;
 }
 
-.day-schedule .event:first-child {
-    min-height: 105px;
+.day-schedule {
+    padding-bottom: 44px;
+    margin-bottom: 44px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.day-schedule:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.event {
+    margin-bottom: 34px;
 }
 
 .event-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: baseline;
+    column-gap: 20px;
     margin-bottom: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-    padding-bottom: 8px;
 }
 
 .event-name {
-    font-size: 11px;
-    letter-spacing: 1.5px;
+    font-size: 12px;
+    letter-spacing: var(--label-tracking);
     text-transform: uppercase;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 .event-time {
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-size: 12px;
+    letter-spacing: var(--label-tracking);
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 .event-location,
 .event-description,
 .event-note {
-    font-size: 13px;
-    line-height: 1.8;
-    margin-top: 8px;
-    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 4px;
+    color: var(--ink-soft);
     font-style: normal;
 }
 
 .event p + p {
-    margin-top: 2px;
+    margin-top: 6px;
+}
+
+.event-day-two-layout {
+    display: grid;
+    grid-template-columns: 122px 1fr;
+    align-items: start;
+    column-gap: 18px;
+}
+
+.event-day-two-illustration {
+    width: 100%;
+    max-width: 112px;
+    height: auto;
+    display: block;
+}
+
+.event-day-two {
+    margin-top: -6px;
+    margin-bottom: 24px;
+}
+
+.event-day-two-copy {
+    max-width: 420px;
+}
+
+.event-day-two-copy .event-header {
+    margin-bottom: 8px;
+}
+
+.event-day-two-copy .event-description,
+.event-day-two-copy .event-location {
+    margin-top: 0;
+}
+
+.event-day-two-copy .event-location {
+    margin-top: 12px;
 }
 
 /* Stay Section */
 .stay-section {
-    padding: 100px 0;
+    padding: 30px 0 92px;
     background-color: #E8E4DC;
 }
 
+.stay-section .container {
+    max-width: 760px;
+}
+
+.stay-illustration {
+    text-align: center;
+    margin: 0 auto 8px;
+}
+
+.stay-illustration img {
+    width: min(690px, 92vw);
+    height: auto;
+    display: inline-block;
+}
+
+.stay-section .section-title {
+    font-size: clamp(68px, 10vw, 96px);
+    line-height: 0.9;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.stay-intro {
+    max-width: var(--content-max);
+    margin: 34px auto 34px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    text-align: left;
+}
+
 .hotel-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 30px;
-    margin-top: 60px;
-    margin-bottom: 50px;
+    display: block;
+    max-width: var(--content-max);
+    margin: 0 auto 48px;
 }
 
 .hotel-card {
-    background: #F5F2EC;
-    border: 1px solid rgba(0,0,0,0.08);
-    padding: 30px;
+    padding: 0;
+    margin-bottom: 48px;
     line-height: 1.7;
+}
+
+.hotel-card:last-child {
+    margin-bottom: 0;
 }
 
 .hotel-name {
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: var(--label-tracking);
+    text-transform: uppercase;
+    margin-bottom: 14px;
 }
 
 .hotel-info {
-    font-size: 13px;
-    line-height: 1.7;
-    margin-bottom: 12px;
-    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    color: var(--ink-soft);
+    max-width: 560px;
 }
 
 .hotel-contact {
-    font-size: 13px;
-    line-height: 1.9;
+    font-size: 14px;
+    line-height: 1.55;
 }
 
 .hotel-contact a {
     color: #1a1a1a;
     text-decoration: none;
-    border-bottom: 1px solid #aaa;
+    border-bottom: none;
 }
 
 .hotel-contact a:hover {
-    border-bottom-color: #1a1a1a;
+    text-decoration: underline;
 }
 
 .stay-footer {
-    font-size: 14px;
-    text-align: center;
-    margin-top: 16px;
-    line-height: 1.8;
-    color: #444;
+    max-width: var(--content-max);
+    font-size: 15px;
+    text-align: left;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: var(--ink-soft);
+}
+
+.stay-footer + .stay-footer {
+    margin-top: 20px;
 }
 
 .stay-footer a {
     color: #1a1a1a;
-    text-decoration: underline;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.45);
 }
 
 /* RSVP Section */
 .rsvp-section {
     padding: 80px 0 100px;
+}
+
+.rsvp-illustration {
+    text-align: center;
+    margin: 10px auto 30px;
+}
+
+.rsvp-illustration img {
+    width: min(680px, 90vw);
+    height: auto;
+    display: inline-block;
 }
 
 .rsvp-banner {
@@ -808,14 +1130,15 @@ body.overlay-active {
 .rsvp-title {
     font-size: 36px;
     font-style: italic;
-    font-weight: 400;
+    font-weight: 500;
+    line-height: 1.08;
     margin-bottom: 20px;
 }
 
 .rsvp-subtitle {
     font-size: 15px;
     margin-bottom: 50px;
-    line-height: 1.6;
+    line-height: 1.65;
 }
 
 /* Form Styles */
@@ -829,9 +1152,11 @@ body.overlay-active {
 
 .form-group label {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 10px;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    font-weight: 500;
 }
 
 .form-group input[type="text"],
@@ -884,12 +1209,12 @@ body.overlay-active {
 .submit-button {
     width: 100%;
     padding: 15px;
-    background-color: #1a1a1a;
+    background-color: var(--ink);
     color: #E8E4DC;
     border: none;
-    font-family: 'Source Serif 4', serif;
+    font-family: var(--font-ui);
     font-size: 13px;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -943,15 +1268,16 @@ body.overlay-active {
 .footer p {
     font-size: 13px;
     font-style: italic;
+    letter-spacing: 0.3px;
 }
 
 .footer-rsvp {
     text-decoration: none;
-    color: #1a1a1a;
+    color: var(--ink);
     font-size: 11px;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--ink);
     padding: 8px 20px;
     transition: all 0.3s ease;
 }
@@ -971,6 +1297,18 @@ body.overlay-active {
     
     .nav-links {
         gap: 15px;
+    }
+
+    .landing-menu {
+        height: 100svh;
+        padding: 0;
+    }
+
+    .landing-banner {
+        max-width: 88vw;
+        max-height: calc(100svh - 60px);
+        width: auto;
+        height: auto;
     }
     
     .invitation-section {
@@ -1009,20 +1347,7 @@ body.overlay-active {
     }
     
     .schedule {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
-
-    .day-schedule:first-child {
-        padding-right: 0;
-        border-right: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-        padding-bottom: 50px;
-        margin-bottom: 50px;
-    }
-
-    .day-schedule:last-child {
-        padding-left: 0;
+        margin-top: 26px;
     }
     
     .container {
@@ -1086,35 +1411,82 @@ body.overlay-active {
 
 /* FAQ Section */
 .faq-section {
-    padding: 80px 0 100px;
+    padding: 62px 0 96px;
     background-color: #E8E4DC;
 }
 
+.faq-section .container {
+    max-width: 760px;
+    position: relative;
+}
+
+.faq-section .section-title {
+    font-size: clamp(68px, 10vw, 96px);
+    line-height: 0.9;
+    text-align: left;
+    margin-bottom: 22px;
+}
+
+.faq-flower {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    width: min(220px, 24vw);
+    height: auto;
+    opacity: 1;
+    pointer-events: none;
+}
+
 .faq-list {
-    max-width: 720px;
-    margin: 0 auto;
+    max-width: var(--content-max);
+    margin: 0;
+    padding-right: 0;
 }
 
 .faq-item {
-    border-bottom: 1px solid #e0dbd2;
-    padding: 28px 0;
-}
-
-.faq-item:first-child {
-    border-top: 1px solid #e0dbd2;
+    padding: 0;
+    margin-bottom: 42px;
 }
 
 .faq-question {
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    margin-bottom: 10px;
+    font-size: clamp(24px, 4.2vw, 34px);
+    font-weight: 600;
+    letter-spacing: var(--label-tracking);
+    text-transform: uppercase;
+    line-height: 1.16;
+    margin-bottom: 8px;
 }
 
 .faq-answer {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.back-to-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-width: 190px;
+    margin-top: 18px;
+    padding: 12px 22px;
+    border: 1px solid rgba(26, 26, 26, 0.55);
+    color: var(--ink);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: var(--label-tracking);
+    font-size: 12px;
+    font-weight: 600;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+    background-color: #1a1a1a;
+    color: #E8E4DC;
+    border-color: #1a1a1a;
 }
 
 @media (max-width: 480px) {
@@ -1127,7 +1499,98 @@ body.overlay-active {
     }
     
     .day-title {
-        font-size: 24px;
+        font-size: 44px;
+        margin-bottom: 6px;
+    }
+
+    .day-heading {
+        margin-bottom: 24px;
+    }
+
+    .day-date {
+        font-size: 11px;
+        letter-spacing: 2.2px;
+    }
+
+    .event-name,
+    .event-time {
+        font-size: 12px;
+        letter-spacing: 2.5px;
+    }
+
+    .event-location,
+    .event-description,
+    .event-note {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .event-day-two-layout {
+        grid-template-columns: 100px 1fr;
+        column-gap: 12px;
+    }
+
+    .event-day-two-illustration {
+        max-width: 92px;
+    }
+
+    .between-message {
+        padding: 20px 64px 42px;
+    }
+
+    .between-star {
+        width: 64px;
+    }
+
+    .between-star-top {
+        top: 6px;
+        right: 10px;
+    }
+
+    .between-star-bottom {
+        bottom: 8px;
+        left: 8px;
+    }
+
+    .faq-section {
+        padding: 46px 0 78px;
+    }
+
+    .faq-section .section-title {
+        font-size: 74px;
+        margin-bottom: 18px;
+    }
+
+    .faq-flower {
+        position: absolute;
+        right: 12px;
+        top: 8px;
+        width: 156px;
+    }
+
+    .faq-item {
+        margin-bottom: 36px;
+    }
+
+    .faq-question {
+        font-size: 17px;
+        letter-spacing: 3.5px;
+        margin-bottom: 6px;
+    }
+
+    .faq-answer {
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    .stay-intro {
+        margin: 26px auto 30px;
+    }
+
+    .back-to-top {
+        width: 100%;
+        min-width: 0;
+        margin-top: 4px;
     }
     
     .rsvp-title {
