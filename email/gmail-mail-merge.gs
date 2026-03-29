@@ -2,15 +2,15 @@ function sendWeddingInvites() {
   var config = {
     sheetName: 'Sheet1',
     websiteBaseUrl: 'https://peterliston93personal.github.io/wedding-website/',
-    inviteImageUrl: 'https://peterliston93personal.github.io/wedding-website/images/TP_WEDDING_INVITATION_WORKING_FILE_alt_07_envenvelope%20for%20email.png',
-    googleCalendarLink: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tara+and+Peter+Wedding+Weekend&details=Ceremony+Friday+3%3A00+PM+%28arrive+by+2%3A30+PM%29+at+Dunmore+House+Hotel.+Saturday%3A+Recovery+Swim+1%3A00+PM+%28Location+TBC%29+and+Day+Two+at+Caseys+5%3A00+PM.&location=Dunmore+House+Hotel%2C+Clonakilty%2C+Co.+Cork&dates=20260918T140000Z%2F20260919T220000Z',
+    inviteImageUrl: 'https://peterliston93personal.github.io/wedding-website/images/Invitation-straight.png',
+    googleCalendarLink: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Tara+and+Peter+Wedding&details=Ceremony+Friday+3%3A00+PM+%28arrive+by+2%3A30+PM%29+at+Dunmore+House+Hotel.+Followed+by+drinks%2C+dinner+and+dancing.&location=Dunmore+House+Hotel%2C+Clonakilty%2C+Co.+Cork&dates=20260918T140000Z%2F20260918T223000Z',
     icsLink: 'https://peterliston93personal.github.io/wedding-website/email/wedding-weekend-2026.ics',
-    outlookLink: 'https://outlook.live.com/calendar/0/action/compose?subject=Tara%20and%20Peter%20Wedding%20Weekend&startdt=2026-09-18T15:00:00%2B01:00&enddt=2026-09-19T23:00:00%2B01:00&location=Dunmore%20House%20Hotel%2C%20Clonakilty%2C%20Co.%20Cork&body=Ceremony%20Friday%203%3A00%20PM%20(arrive%20by%202%3A30%20PM)%20at%20Dunmore%20House%20Hotel.%20Saturday%3A%20Recovery%20Swim%201%3A00%20PM%20(Location%20TBC)%20and%20Day%20Two%20at%20Caseys%205%3A00%20PM.',
+    outlookLink: 'https://outlook.live.com/calendar/0/action/compose?subject=Tara%20and%20Peter%20Wedding&startdt=2026-09-18T15:00:00%2B01:00&enddt=2026-09-18T23:30:00%2B01:00&location=Dunmore%20House%20Hotel%2C%20Clonakilty%2C%20Co.%20Cork&body=Ceremony%20Friday%203%3A00%20PM%20(arrive%20by%202%3A30%20PM)%20at%20Dunmore%20House%20Hotel.%20Followed%20by%20drinks%2C%20dinner%20and%20dancing.',
     subject: 'You are invited: Tara and Peter Wedding Weekend',
     fromName: 'Tara and Peter Wedding',
     sendOnePerGroup: true,
-    pilotMode: false,
-    pilotGroupIds: [],
+    pilotMode: true,
+    pilotGroupIds: ['1', '2', '3', '4', '5', '6'],
     pilotEmails: [],
     testMode: true,
     testRecipient: 'tara.e.power@gmail.com',
@@ -166,7 +166,7 @@ function buildPlainText_(data) {
     '',
     'You are invited to Tara and Peter wedding weekend.',
     'Friday 18 September 2026 - Ceremony 3:00 PM (arrive 2:30 PM) at Dunmore House Hotel, Clonakilty, Co. Cork.',
-    'Saturday 19 September 2026 - Recovery Swim 1:00 PM and Day Two at Caseys 5:00 PM.',
+    'Reception to follow after the ceremony.',
     '',
     'RSVP: ' + data.RSVP_LINK,
     'Google Calendar: ' + data.GOOGLE_CALENDAR_LINK,
@@ -187,8 +187,7 @@ function getHtmlTemplate_() {
     '<p style="margin:10px 0 0 0; font-size:16px; line-height:1.6;">We would love to celebrate with you.<br>Please RSVP using your personal link below.</p></td></tr>' +
     '<tr><td style="padding:20px 24px 0 24px; font-family:Arial, Helvetica, sans-serif; color:#2a2a2a;">' +
     '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #eee7d8; border-bottom:1px solid #eee7d8;">' +
-    '<tr><td style="padding:14px 0; font-size:14px; line-height:1.6;"><strong>Friday, 18 September 2026</strong><br>Ceremony at 3:00 PM (arrive by 2:30 PM)<br>Dunmore House Hotel, Clonakilty, Co. Cork</td></tr>' +
-    '<tr><td style="padding:0 0 14px 0; font-size:14px; line-height:1.6;"><strong>Saturday, 19 September 2026</strong><br>Recovery Swim at 1:00 PM (Location TBC)<br>Day Two at Caseys at 5:00 PM</td></tr>' +
+    '<tr><td style="padding:14px 0; font-size:14px; line-height:1.6;"><strong>Friday, 18 September 2026</strong><br>Ceremony at 3:00 PM (arrive by 2:30 PM)<br>Dunmore House Hotel, Clonakilty, Co. Cork<br>Reception to follow.</td></tr>' +
     '</table></td></tr>' +
     '<tr><td align="center" style="padding:24px 24px 6px 24px; font-family:Arial, Helvetica, sans-serif;"><a href="{{RSVP_LINK}}" style="display:inline-block; background-color:#1f1f1f; color:#ffffff; text-decoration:none; font-size:14px; letter-spacing:0.4px; padding:12px 28px; border-radius:3px;">RSVP NOW</a></td></tr>' +
     '<tr><td align="center" style="padding:0 24px 18px 24px; font-family:Arial, Helvetica, sans-serif; color:#6a6a6a; font-size:13px;">RSVP deadline: 18 July 2026</td></tr>' +

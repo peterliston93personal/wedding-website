@@ -1,6 +1,6 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Tara and Peter Wedding//Wedding Weekend 2026//EN
+PRODID:-//Tara and Peter Wedding//Wedding Day 2026//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VTIMEZONE
@@ -29,28 +29,6 @@ DTSTART;TZID=Europe/Dublin:20260918T150000
 DTEND;TZID=Europe/Dublin:20260918T233000
 LOCATION:Dunmore House Hotel\, Clonakilty\, Co. Cork
 DESCRIPTION:Ceremony starts at 3:00 PM. Please arrive by 2:30 PM. Followed by drinks\, dinner and dancing.
-STATUS:CONFIRMED
-SEQUENCE:0
-END:VEVENT
-BEGIN:VEVENT
-UID:recovery-swim-20260919@tara-peter-wedding
-DTSTAMP:20260329T080000Z
-SUMMARY:Recovery Swim
-DTSTART;TZID=Europe/Dublin:20260919T130000
-DTEND;TZID=Europe/Dublin:20260919T150000
-LOCATION:Clonakilty\, Co. Cork (Location TBC)
-DESCRIPTION:Pack your togs.
-STATUS:CONFIRMED
-SEQUENCE:0
-END:VEVENT
-BEGIN:VEVENT
-UID:day-two-caseys-20260919@tara-peter-wedding
-DTSTAMP:20260329T080000Z
-SUMMARY:Day Two at Caseys
-DTSTART;TZID=Europe/Dublin:20260919T170000
-DTEND;TZID=Europe/Dublin:20260919T230000
-LOCATION:Caseys Bar\, Clonakilty\, Co. Cork
-DESCRIPTION:Food\, drinks and live music.
 STATUS:CONFIRMED
 SEQUENCE:0
 END:VEVENT
