@@ -128,6 +128,16 @@ function updateDietaryFields() {
     container.innerHTML = '<input type="text" id="dietary-guest-1" name="dietary-guest-1" placeholder="Dietary requirements or allergies (or leave blank if none)">';
 }
 
+function scrollToFaqAfterSubmit() {
+    const faqSection = document.getElementById('faq');
+    if (!faqSection) return;
+
+    // Let the success message render before moving focus down the page.
+    setTimeout(() => {
+        faqSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 1400);
+}
+
 // RSVP Form Submission
 const form = document.getElementById('rsvpForm');
 const formMessage = document.getElementById('formMessage');
@@ -331,6 +341,7 @@ form.addEventListener('submit', async (e) => {
             // For testing purposes - show success message
             console.log('RSVP Data:', data);
             showMessage('Thank you for your RSVP! Your response has been recorded. (Note: Google Sheets integration needs to be set up)', 'success');
+            scrollToFaqAfterSubmit();
             resetFormForNextPerson();
         } else {
             // Send data to Google Sheets
@@ -348,6 +359,7 @@ form.addEventListener('submit', async (e) => {
                 'We can\'t wait to celebrate with you!' : 
                 'We\'ll miss you but thanks for letting us know.';
             showMessage(`Thank you for your RSVP! ${attendingText}`, 'success');
+            scrollToFaqAfterSubmit();
             
             // Reset form for next person after a short delay
             setTimeout(resetFormForNextPerson, 2000);
