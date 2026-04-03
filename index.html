@@ -74,36 +74,13 @@
                 </text>
             </svg>
             <svg class="wgm-wave-svg wgm-wave-svg--mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 170" preserveAspectRatio="none">
-                <defs>
-                    <path id="wgm-mobile-wave-fill-path" d="M0 32 C100 32 200 65 300 65 S500 32 600 32 S800 65 900 65 S1100 32 1200 32 L1200 170 L0 170 Z" />
-                    <clipPath id="wgm-mobile-wave-clip">
-                        <use href="#wgm-mobile-wave-fill-path" />
-                    </clipPath>
-                    <path id="wgm-flow-text-path-mobile-a" d="M0 85 C100 85 200 117 300 117 S500 85 600 85 S800 117 900 117 S1100 85 1200 85" fill="none" stroke="none" />
-                    <path id="wgm-flow-text-path-mobile-b" d="M1200 85 C1300 85 1400 117 1500 117 S1700 85 1800 85 S2000 117 2100 117 S2300 85 2400 85" fill="none" stroke="none" />
-                </defs>
-                <use href="#wgm-mobile-wave-fill-path" class="wgm-wave-fill" />
+                <path class="wgm-wave-fill" d="M0 32 C100 32 200 65 300 65 S500 32 600 32 S800 65 900 65 S1100 32 1200 32 L1200 170 L0 170 Z" />
                 <path class="wgm-wave-line" d="M0 32 C100 32 200 65 300 65 S500 32 600 32 S800 65 900 65 S1100 32 1200 32" />
-                <g clip-path="url(#wgm-mobile-wave-clip)">
-                    <g>
-                        <text class="wgm-wave-text wgm-wave-text--mobile">
-                            <textPath href="#wgm-flow-text-path-mobile-a" startOffset="0">
-                                <tspan>We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                            </textPath>
-                        </text>
-                        <text class="wgm-wave-text wgm-wave-text--mobile">
-                            <textPath href="#wgm-flow-text-path-mobile-b" startOffset="0">
-                                <tspan>We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                                <tspan dx="2.2em">We're getting married</tspan><tspan dx="2.2em">❤︎</tspan>
-                            </textPath>
-                        </text>
-                        <animateTransform attributeName="transform" type="translate" values="0 0;-1200 0" dur="2.1s" repeatCount="indefinite" />
-                    </g>
+                <path id="wgm-flow-text-path-mobile" d="M0 85 C100 85 200 117 300 117 S500 85 600 85 S800 117 900 117 S1100 85 1200 85" fill="none" stroke="none" />
+                <g class="wgm-mobile-loop">
+                    <text class="wgm-wave-text wgm-wave-text--mobile wgm-mobile-loop-segment">
+                        <textPath href="#wgm-flow-text-path-mobile" startOffset="0">We're getting married ❤︎</textPath>
+                    </text>
                 </g>
             </svg>
         </div>

@@ -113,6 +113,97 @@ function duplicateBannerContent() {
 // Initialize banner duplication
 duplicateBannerContent();
 
+let mobileWgmLoopFrameId = null;
+let mobileWgmLoopResizeTimer = null;
+
+function initMobileWgmBannerLoop() {
+    if (mobileWgmLoopFrameId) {
+        cancelAnimationFrame(mobileWgmLoopFrameId);
+        mobileWgmLoopFrameId = null;
+    }
+
+    if (!window.matchMedia('(max-width: 768px)').matches) {
+        return;
+    }
+
+    const svg = document.querySelector('.wgm-wave-svg--mobile');
+    const loop = svg ? svg.querySelector('.wgm-mobile-loop') : null;
+    const path = svg ? svg.querySelector('#wgm-flow-text-path-mobile') : null;
+    const template = loop ? loop.querySelector('.wgm-mobile-loop-segment') : null;
+
+    if (!svg || !loop || !path || !template) {
+        return;
+    }
+
+    const extraSegments = Array.from(loop.querySelectorAll('.wgm-mobile-loop-segment')).slice(1);
+    extraSegments.forEach(segment => segment.remove());
+
+    const templateTextPath = template.querySelector('textPath');
+    if (!templateTextPath) {
+        return;
+    }
+
+    templateTextPath.setAttribute('startOffset', '0');
+
+    let pathLength = 0;
+    let segmentLength = 0;
+
+    try {
+        pathLength = path.getTotalLength();
+        segmentLength = template.getComputedTextLength();
+    } catch (error) {
+        return;
+    }
+
+    if (!pathLength || !segmentLength) {
+        return;
+    }
+
+    const gap = Math.max(segmentLength * 0.32, 60);
+    const cycleLength = segmentLength + gap;
+    const copiesNeeded = Math.max(4, Math.ceil((pathLength + cycleLength) / cycleLength) + 1);
+    const segments = [template];
+
+    for (let index = 1; index < copiesNeeded; index++) {
+        const clone = template.cloneNode(true);
+        loop.appendChild(clone);
+        segments.push(clone);
+    }
+
+    const unitsPerSecond = 220 / 2.1;
+    let lastTimestamp = performance.now();
+    let offset = 0;
+
+    function tick(timestamp) {
+        const deltaSeconds = (timestamp - lastTimestamp) / 1000;
+        lastTimestamp = timestamp;
+        offset = (offset + unitsPerSecond * deltaSeconds) % cycleLength;
+
+        segments.forEach((segment, index) => {
+            const textPath = segment.querySelector('textPath');
+            if (!textPath) {
+                return;
+            }
+            textPath.setAttribute('startOffset', `${index * cycleLength - offset}`);
+        });
+
+        mobileWgmLoopFrameId = requestAnimationFrame(tick);
+    }
+
+    mobileWgmLoopFrameId = requestAnimationFrame(tick);
+}
+
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(initMobileWgmBannerLoop);
+} else {
+    window.addEventListener('load', initMobileWgmBannerLoop);
+}
+
+window.addEventListener('resize', function () {
+    clearTimeout(mobileWgmLoopResizeTimer);
+    mobileWgmLoopResizeTimer = setTimeout(initMobileWgmBannerLoop, 150);
+});
+
 // Dynamic per-guest dietary fields
 const guestsInput = document.getElementById('guests');
 if (guestsInput) {
