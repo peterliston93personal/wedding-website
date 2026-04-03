@@ -791,7 +791,7 @@ body.overlay-active {
 .wgm-wave-text--mobile {
     font-size: 3.25rem;
     font-weight: 500;
-    letter-spacing: 0;
+    letter-spacing: 0.03em;
 }
 
 .between-message {

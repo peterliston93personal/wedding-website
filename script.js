@@ -170,7 +170,7 @@ function initMobileWgmBannerLoop() {
         segments.push(clone);
     }
 
-    const unitsPerSecond = 220 / 2.1;
+    const unitsPerSecond = (220 / 2.1) * 2;
     let lastTimestamp = performance.now();
     let offset = 0;
 
