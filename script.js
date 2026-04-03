@@ -629,6 +629,7 @@ function buildSingleGuestPayload(member, response, sharedMessage, timestamp) {
     return {
         action: 'updateRSVP',
         timestamp,
+        groupId: member.groupId || '',
         email: member.email,
         name: member.name,
         phone: 'Not provided',
@@ -654,6 +655,7 @@ function buildPartyPayload() {
         action: 'updateGroupRSVP',
         timestamp,
         primaryEmail: primaryInviteEmail,
+        groupId: currentPartyMembers[0] ? currentPartyMembers[0].groupId || '' : '',
         partySize: currentPartyMembers.length,
         sharedMessage,
         guests: currentPartyMembers.map((member) => buildSingleGuestPayload(member, getGuestResponse(member.key), sharedMessage, timestamp))
