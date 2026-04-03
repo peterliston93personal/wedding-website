@@ -241,7 +241,7 @@ const RSVP_EVENTS = [
 
 // Configuration for Google Sheets
 // INSTRUCTIONS: Replace this URL with your Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwziGBKceyK9n91AjYmPaX6jMr5YA_7hWKn2wPPJ2iSbfLgoagMQEv7Svp_Li-GQM8k/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZOb2ZWvr20H8X5W427ZCj604U9t_tl7422f0vSn-7tdSpDJFp54m6hkVQwCHmae5O/exec';
 
 if (submitButton) {
     submitButton.disabled = true;
