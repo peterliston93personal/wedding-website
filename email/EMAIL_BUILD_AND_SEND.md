@@ -7,6 +7,7 @@ This setup sends professional wedding invites directly from Gmail using Google A
 - gmail-mail-merge.gs: Google Apps Script sender code.
 - gmail-invite-template.html: standalone HTML version of the invite template.
 - wedding-weekend-2026.ics: Apple Calendar and Outlook calendar file.
+- assets/: public email-only icons, illustrations, and invitation artwork used by Gmail.
 - Wedding RSVPs - MailMerge Ready.csv: optional seed CSV with mail-merge columns.
 
 ## 1. Put this folder on your live website
@@ -15,7 +16,11 @@ Your script points to this ICS URL:
 
 https://peterliston93personal.github.io/wedding-website/email/wedding-weekend-2026.ics
 
-To make that work, commit and push the new email folder to your website repository so the ICS file is publicly reachable.
+It also expects the email artwork to be publicly reachable under:
+
+https://peterliston93personal.github.io/wedding-website/email/assets/
+
+To make that work, commit and push the full email folder, including email/assets, to your website repository.
 
 ## 2. Prepare the Google Sheet
 
