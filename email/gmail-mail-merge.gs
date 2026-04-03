@@ -113,6 +113,52 @@ function sendWeddingInvites() {
   }
 }
 
+/**
+ * Run this function directly in the Apps Script editor to test that
+ * the RSVP write handler is working before testing through the website.
+ * Check the execution log (View > Execution log) for the result.
+ */
+function testRsvpWrite() {
+  var fakeEvent = {
+    postData: {
+      contents: JSON.stringify({
+        action: 'updateGroupRSVP',
+        timestamp: new Date().toISOString(),
+        groupId: '1',
+        primaryEmail: 'tara.e.power@gmail.com',
+        sharedMessage: 'Test write from Apps Script editor',
+        guests: [
+          {
+            groupId: '1',
+            email: 'tara.e.power@gmail.com',
+            name: 'Tara Power',
+            phone: 'Not provided',
+            attending: "Yes, I'll be there!",
+            attendingCount: 1,
+            dietary: 'None',
+            events: 'Friday Ceremony & Reception',
+            message: 'Test write from Apps Script editor'
+          },
+          {
+            groupId: '1',
+            email: 'peterliston93@gmail.com',
+            name: 'Peter Liston',
+            phone: 'Not provided',
+            attending: "Yes, I'll be there!",
+            attendingCount: 1,
+            dietary: 'None',
+            events: 'Friday Ceremony & Reception',
+            message: 'Test write from Apps Script editor'
+          }
+        ]
+      })
+    }
+  };
+
+  var result = doPost(fakeEvent);
+  Logger.log('testRsvpWrite result: ' + result.getContent());
+}
+
 function resetEmailSentFlags() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var values = sheet.getDataRange().getValues();
