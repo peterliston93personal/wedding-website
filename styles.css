@@ -789,7 +789,7 @@ body.overlay-active {
 }
 
 .wgm-wave-text--mobile {
-    font-size: 2.3rem;
+    font-size: 4.2rem;
     font-weight: 500;
     letter-spacing: 0;
 }
@@ -1341,7 +1341,7 @@ body.overlay-active {
     .wgm-wave-svg--mobile {
         display: block;
         width: 100%;
-        height: 88px;
+        height: 132px;
         margin-left: 0;
     }
 
@@ -1397,7 +1397,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 2.15rem;
+        font-size: 3.7rem;
     }
 
     .invitation-section {
@@ -1583,7 +1583,7 @@ body.overlay-active {
 
 @media (max-width: 480px) {
     .wgm-wave-svg--mobile {
-        height: 80px;
+        height: 116px;
     }
 
     .wgm-wave-text {
@@ -1591,7 +1591,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 1.9rem;
+        font-size: 3.2rem;
     }
 
     .hero-names {
