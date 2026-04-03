@@ -1387,7 +1387,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text {
-        font-size: 1.55rem;
+        font-size: 1.95rem;
     }
 
     .invitation-section {
@@ -1573,11 +1573,11 @@ body.overlay-active {
 
 @media (max-width: 480px) {
     .wgm-wave-svg--mobile {
-        height: 88px;
+        height: 96px;
     }
 
     .wgm-wave-text {
-        font-size: 1.38rem;
+        font-size: 1.72rem;
     }
 
     .hero-names {
