@@ -240,69 +240,21 @@
                 <p class="rsvp-subtitle">Please let us know if you can join us by filling out the form below.</p>
                 <p class="rsvp-deadline">Please RSVP by the 18th of July.</p>
                 
-                <!-- Group Member Selector (shown if party size > 1) -->
-                <div id="group-selector-section" class="form-group" style="display:none;">
-                    <label>Who are you RSVPing for? *</label>
-                    <div id="group-selector" class="radio-group">
-                        <!-- Radio buttons will be populated by JavaScript -->
-                    </div>
-                </div>
-                
                 <form id="rsvpForm" class="rsvp-form">
-                    <div class="form-group">
-                        <label for="name">Full Name(s) *</label>
-                        <input type="text" id="name" name="name" required placeholder="Your name(s)">
+                    <div id="party-overview" class="party-overview" hidden>
+                        <p class="party-overview-label">Your RSVP</p>
+                        <h3 id="party-title" class="party-overview-title">Reply for your party</h3>
+                        <p id="party-progress" class="party-progress">Choose an attendance response for each guest below. You only need to submit once.</p>
+                    </div>
+
+                    <div id="guest-blocks" class="guest-blocks" aria-live="polite">
+                        <div class="guest-blocks-empty">Open your personalized invite link to load the RSVP form.</div>
                     </div>
                     
-                    <input type="hidden" id="email" name="email">
-                    
-                    <div class="form-group">
-                        <label>Will you be attending? *</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="attending" value="Yes, I'll be there!" required>
-                                <span>Yes, I'll be there!</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="attending" value="Sorry, can't make it">
-                                <span>Sorry, can't make it</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="guests">Number of Guests (including yourself) *</label>
-                        <input type="number" id="guests" name="guests" min="0" max="10" placeholder="1">
-                    </div>
-                    
-                    <div class="form-group" id="dietary-section">
-                        <label>Dietary Requirements &amp; Allergens</label>
-                        <div id="dietary-container">
-                            <p class="dietary-hint">Enter the number of guests above to add dietary information per guest.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Which events will you attend?</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="events" value="Friday Ceremony & Reception">
-                                <span>Friday Ceremony & Reception</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="events" value="Saturday Recovery Swim">
-                                <span>Saturday Recovery Swim</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="events" value="Saturday Day Two @ Caseys">
-                                <span>Saturday Day Two @ Caseys</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
+                    <div class="form-group form-group-shared-message">
                         <label for="message">Message for the Couple</label>
                         <textarea id="message" name="message" rows="4" placeholder="Any special notes or well wishes..."></textarea>
+                        <p class="form-helper">This message is shared across the whole party.</p>
                     </div>
                     
                     <button type="submit" class="submit-button">Submit RSVP</button>

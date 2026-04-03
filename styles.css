@@ -1171,7 +1171,7 @@ body.overlay-active {
 }
 
 .rsvp-form-container {
-    max-width: 600px;
+    max-width: 680px;
     margin: 0 auto;
     text-align: center;
 }
@@ -1188,6 +1188,162 @@ body.overlay-active {
     font-size: 15px;
     margin-bottom: 50px;
     line-height: 1.65;
+}
+
+.party-overview {
+    margin-bottom: 26px;
+    padding: 24px 28px;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.42) 100%);
+    text-align: left;
+}
+
+.party-overview-label {
+    margin: 0 0 6px;
+    font-size: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: #6b6458;
+}
+
+.party-overview-title {
+    margin: 0 0 8px;
+    font-size: 31px;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.party-progress {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+}
+
+.guest-blocks {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.guest-blocks-empty {
+    padding: 24px 28px;
+    border: 1px dashed rgba(0, 0, 0, 0.22);
+    border-radius: 24px;
+    background-color: rgba(255, 255, 255, 0.32);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    text-align: left;
+}
+
+.guest-card {
+    padding: 24px 26px;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.58);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.guest-card.is-complete {
+    border-color: rgba(31, 87, 62, 0.34);
+    box-shadow: 0 18px 36px rgba(31, 87, 62, 0.08);
+}
+
+.guest-card.is-declined {
+    border-color: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.46);
+}
+
+.guest-card.needs-response {
+    border-color: rgba(118, 45, 34, 0.55);
+    box-shadow: 0 0 0 1px rgba(118, 45, 34, 0.18);
+}
+
+.guest-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.guest-card-eyebrow {
+    margin: 0 0 6px;
+    font-size: 11px;
+    letter-spacing: 2.1px;
+    text-transform: uppercase;
+    color: #6b6458;
+}
+
+.guest-card-name {
+    margin: 0;
+    font-size: 29px;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.guest-card-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    font-size: 11px;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.guest-card.is-complete .guest-card-status {
+    background-color: #dceade;
+    border-color: rgba(31, 87, 62, 0.18);
+    color: #1f573e;
+}
+
+.guest-card.is-declined .guest-card-status {
+    background-color: #efebe4;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #5b554b;
+}
+
+.guest-card .form-group {
+    margin-bottom: 24px;
+}
+
+.guest-card .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.guest-card-extra-fields[hidden],
+.guest-card-decline-note[hidden] {
+    display: none;
+}
+
+.guest-card-decline-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6b6458;
+    font-style: italic;
+}
+
+.form-group-shared-message {
+    margin-top: 4px;
+}
+
+.form-helper {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #6b6458;
+    font-style: italic;
 }
 
 /* Form Styles */
@@ -1458,6 +1614,30 @@ body.overlay-active {
     .rsvp-text {
         font-size: 12px;
     }
+
+    .party-overview {
+        padding: 22px 20px;
+        border-radius: 24px;
+    }
+
+    .party-overview-title {
+        font-size: 27px;
+    }
+
+    .guest-card {
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .guest-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .guest-card-status {
+        min-width: 0;
+    }
 }
 
 
@@ -1620,6 +1800,27 @@ body.overlay-active {
     .day-date {
         font-size: 11px;
         letter-spacing: 2.2px;
+    }
+
+    .party-overview {
+        padding: 18px 16px;
+    }
+
+    .party-overview-title {
+        font-size: 23px;
+    }
+
+    .guest-card {
+        padding: 18px 16px;
+        border-radius: 20px;
+    }
+
+    .guest-card-name {
+        font-size: 24px;
+    }
+
+    .guest-card-status {
+        width: 100%;
     }
 
     .event-name,

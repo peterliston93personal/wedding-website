@@ -204,21 +204,6 @@ window.addEventListener('resize', function () {
     mobileWgmLoopResizeTimer = setTimeout(initMobileWgmBannerLoop, 150);
 });
 
-// Dynamic per-guest dietary fields
-const guestsInput = document.getElementById('guests');
-if (guestsInput) {
-    guestsInput.addEventListener('input', updateDietaryFields);
-    guestsInput.addEventListener('change', updateDietaryFields);
-}
-
-function updateDietaryFields() {
-    const container = document.getElementById('dietary-container');
-    if (!container) return;
-    
-    // In group mode, always show single dietary field
-    container.innerHTML = '<input type="text" id="dietary-guest-1" name="dietary-guest-1" placeholder="Dietary requirements or allergies (or leave blank if none)">';
-}
-
 function scrollToFaqAfterSubmit() {
     const faqSection = document.getElementById('faq');
     if (!faqSection) return;
@@ -232,13 +217,35 @@ function scrollToFaqAfterSubmit() {
 // RSVP Form Submission
 const form = document.getElementById('rsvpForm');
 const formMessage = document.getElementById('formMessage');
+const rsvpSubtitle = document.querySelector('.rsvp-subtitle');
+const guestBlocksContainer = document.getElementById('guest-blocks');
+const partyOverview = document.getElementById('party-overview');
+const partyTitle = document.getElementById('party-title');
+const partyProgress = document.getElementById('party-progress');
+const sharedMessageInput = document.getElementById('message');
+const submitButton = form ? form.querySelector('.submit-button') : null;
 
-// Stores the current group so resetFormForNextPerson can call loadGuestForm directly
-let currentGroupMembers = [];
+let currentPartyMembers = [];
+let partyResponses = {};
+let primaryInviteEmail = '';
+let sharedPartyMessage = '';
+let formMessageTimerId = null;
+
+const RSVP_ATTENDING_YES = 'Yes, I\'ll be there!';
+const RSVP_ATTENDING_NO = 'Sorry, can\'t make it';
+const RSVP_EVENTS = [
+    'Friday Ceremony & Reception',
+    'Saturday Recovery Swim',
+    'Saturday Day Two @ Caseys'
+];
 
 // Configuration for Google Sheets
 // INSTRUCTIONS: Replace this URL with your Google Apps Script Web App URL
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwziGBKceyK9n91AjYmPaX6jMr5YA_7hWKn2wPPJ2iSbfLgoagMQEv7Svp_Li-GQM8k/exec';
+
+if (submitButton) {
+    submitButton.disabled = true;
+}
 
 // Get email from URL parameter
 function getEmailFromURL() {
@@ -278,225 +285,405 @@ async function fetchGroupMembers(email) {
     }
 }
 
+function escapeHtml(value) {
+    return String(value || '').replace(/[&<>'"]/g, (character) => {
+        const entities = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        };
+
+        return entities[character] || character;
+    });
+}
+
+function createGuestResponse(member) {
+    return {
+        name: member.name,
+        email: member.email,
+        attending: '',
+        dietary: '',
+        events: []
+    };
+}
+
+function normalizeGuest(member, index) {
+    return {
+        key: `guest-${index}`,
+        name: member.name,
+        email: member.email || '',
+        partySize: member.partySize || 1,
+        groupId: member.groupId || ''
+    };
+}
+
+function setEmptyGuestState(message) {
+    if (guestBlocksContainer) {
+        guestBlocksContainer.innerHTML = '';
+
+        const emptyState = document.createElement('div');
+        emptyState.className = 'guest-blocks-empty';
+        emptyState.textContent = message;
+        guestBlocksContainer.appendChild(emptyState);
+    }
+
+    if (partyOverview) {
+        partyOverview.hidden = true;
+    }
+
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submit RSVP';
+    }
+}
+
+function hideMessage() {
+    if (!formMessage) return;
+
+    formMessage.style.display = 'none';
+
+    if (formMessageTimerId) {
+        clearTimeout(formMessageTimerId);
+        formMessageTimerId = null;
+    }
+}
+
+function getGuestResponse(guestKey) {
+    return partyResponses[guestKey] || null;
+}
+
+function isGuestReady(response) {
+    return Boolean(response && response.attending);
+}
+
+function getReadyGuestCount() {
+    return currentPartyMembers.filter((member) => isGuestReady(getGuestResponse(member.key))).length;
+}
+
+function updatePartyOverview() {
+    if (!partyOverview || !partyTitle || !partyProgress) return;
+
+    if (!currentPartyMembers.length) {
+        partyOverview.hidden = true;
+        return;
+    }
+
+    partyOverview.hidden = false;
+
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = currentPartyMembers.length > 1 ? 'Submit Party RSVP' : 'Submit RSVP';
+    }
+
+    if (currentPartyMembers.length === 1) {
+        const onlyGuest = currentPartyMembers[0];
+
+        partyTitle.textContent = onlyGuest.name;
+        partyProgress.textContent = isGuestReady(getGuestResponse(onlyGuest.key))
+            ? 'Everything looks ready. You only need to submit once.'
+            : 'Choose whether you can make it below, then submit once when you are ready.';
+        return;
+    }
+
+    const readyGuestCount = getReadyGuestCount();
+    partyTitle.textContent = `Reply for ${currentPartyMembers.length} guests`;
+    partyProgress.textContent = readyGuestCount === currentPartyMembers.length
+        ? 'All guest responses are ready. You only need to submit once.'
+        : `${readyGuestCount} of ${currentPartyMembers.length} guests responded so far. Choose an attendance response for each guest, then submit once.`;
+}
+
+function buildEventOptionsMarkup(member, response) {
+    return RSVP_EVENTS.map((eventName) => {
+        const safeEventName = escapeHtml(eventName);
+        const isChecked = response.events.includes(eventName) ? 'checked' : '';
+
+        return `
+            <label class="checkbox-label">
+                <input type="checkbox" name="events-${member.key}" value="${safeEventName}" data-guest-key="${member.key}" data-field="events" ${isChecked}>
+                <span>${safeEventName}</span>
+            </label>
+        `;
+    }).join('');
+}
+
+function buildGuestCardMarkup(member, index, totalGuests) {
+    const response = getGuestResponse(member.key) || createGuestResponse(member);
+    const isDeclining = response.attending === RSVP_ATTENDING_NO;
+    const isReady = isGuestReady(response);
+    const statusLabel = isDeclining ? 'Not attending' : isReady ? 'Ready' : 'Response needed';
+    const guestLabel = totalGuests > 1 ? `Guest ${index + 1} of ${totalGuests}` : 'Your invitation';
+    const safeName = escapeHtml(member.name);
+    const safeDietary = escapeHtml(response.dietary);
+    const safeYes = escapeHtml(RSVP_ATTENDING_YES);
+    const safeNo = escapeHtml(RSVP_ATTENDING_NO);
+
+    return `
+        <article class="guest-card ${isReady ? 'is-complete' : 'is-pending'} ${isDeclining ? 'is-declined' : ''}" data-guest-key="${member.key}">
+            <div class="guest-card-header">
+                <div>
+                    <p class="guest-card-eyebrow">${guestLabel}</p>
+                    <h3 class="guest-card-name">${safeName}</h3>
+                </div>
+                <span class="guest-card-status">${statusLabel}</span>
+            </div>
+
+            <div class="form-group guest-card-attending-group">
+                <label>Will ${safeName} be attending? *</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="attending-${member.key}" value="${safeYes}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_YES ? 'checked' : ''}>
+                        <span>Yes, I'll be there!</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="attending-${member.key}" value="${safeNo}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_NO ? 'checked' : ''}>
+                        <span>Sorry, can't make it</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="guest-card-extra-fields" ${isDeclining ? 'hidden' : ''}>
+                <div class="form-group">
+                    <label>Which events will ${safeName} attend?</label>
+                    <div class="checkbox-group guest-card-events">
+                        ${buildEventOptionsMarkup(member, response)}
+                    </div>
+                </div>
+
+                <div class="form-group guest-card-dietary-group">
+                    <label for="${member.key}-dietary">Dietary Requirements &amp; Allergens</label>
+                    <input type="text" id="${member.key}-dietary" name="dietary-${member.key}" value="${safeDietary}" placeholder="Dietary requirements or allergies (or leave blank if none)" data-guest-key="${member.key}" data-field="dietary">
+                    <p class="form-helper">Leave blank if there is nothing to note for this guest.</p>
+                </div>
+            </div>
+
+            <p class="guest-card-decline-note" ${isDeclining ? '' : 'hidden'}>No extra details needed for this guest.</p>
+        </article>
+    `;
+}
+
+function renderGuestBlocks() {
+    if (!guestBlocksContainer) return;
+
+    if (!currentPartyMembers.length) {
+        setEmptyGuestState('Open your personalized invite link to load the RSVP form.');
+        return;
+    }
+
+    guestBlocksContainer.innerHTML = currentPartyMembers
+        .map((member, index) => buildGuestCardMarkup(member, index, currentPartyMembers.length))
+        .join('');
+
+    updatePartyOverview();
+}
+
+function clearGuestDetailInputs(card) {
+    if (!card) return;
+
+    card.querySelectorAll('input[data-field="events"]').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+
+    const dietaryInput = card.querySelector('input[data-field="dietary"]');
+    if (dietaryInput) {
+        dietaryInput.value = '';
+    }
+}
+
+function syncGuestCardState(guestKey) {
+    if (!guestBlocksContainer) return;
+
+    const card = guestBlocksContainer.querySelector(`[data-guest-key="${guestKey}"]`);
+    if (!card) return;
+
+    const response = getGuestResponse(guestKey);
+    const isDeclining = response && response.attending === RSVP_ATTENDING_NO;
+    const isReady = isGuestReady(response);
+    const status = card.querySelector('.guest-card-status');
+    const extraFields = card.querySelector('.guest-card-extra-fields');
+    const declineNote = card.querySelector('.guest-card-decline-note');
+
+    card.classList.toggle('is-complete', isReady);
+    card.classList.toggle('is-pending', !isReady);
+    card.classList.toggle('is-declined', Boolean(isDeclining));
+    card.classList.remove('needs-response');
+
+    if (status) {
+        status.textContent = isDeclining ? 'Not attending' : isReady ? 'Ready' : 'Response needed';
+    }
+
+    if (extraFields) {
+        extraFields.hidden = Boolean(isDeclining);
+    }
+
+    if (declineNote) {
+        declineNote.hidden = !isDeclining;
+    }
+
+    updatePartyOverview();
+}
+
+function resetPartyState(partyMembers) {
+    currentPartyMembers = partyMembers.map((member, index) => normalizeGuest(member, index));
+    partyResponses = {};
+    sharedPartyMessage = '';
+
+    currentPartyMembers.forEach((member) => {
+        partyResponses[member.key] = createGuestResponse(member);
+    });
+
+    if (sharedMessageInput) {
+        sharedMessageInput.value = '';
+    }
+
+    hideMessage();
+    renderGuestBlocks();
+}
+
 // Pre-fill form with guest data
 async function preFillForm() {
     const email = getEmailFromURL();
+    primaryInviteEmail = email || '';
     
     if (!email) {
         // No email in URL - show message
-        document.querySelector('.rsvp-subtitle').innerHTML = 
+        rsvpSubtitle.innerHTML = 
             'Please use the personalized link from your invitation email. <br>Or contact us if you need assistance.';
+        setEmptyGuestState('Open the personalized link from your invitation email to load the RSVP form.');
         return;
     }
     
     // Show loading state
-    document.querySelector('.rsvp-subtitle').innerHTML = 'Loading your invitation...';
+    rsvpSubtitle.textContent = 'Loading your invitation...';
+    setEmptyGuestState('Loading your invitation...');
     
     // Fetch primary guest data to verify email
     const guestData = await fetchGuestData(email);
     
     if (!guestData) {
         // Guest not found
-        document.querySelector('.rsvp-subtitle').innerHTML = 
+        rsvpSubtitle.textContent = 
             'We couldn\'t find your invitation. Please check your email link or contact us for assistance.';
         showMessage('Unable to load your invitation. Please use the link from your email or contact us.', 'error');
+        setEmptyGuestState('We could not load your invitation. Please use the link from your email or contact us.');
         return;
     }
     
     // Fetch all group members
     const groupMembers = await fetchGroupMembers(email);
+    const partyMembers = groupMembers && groupMembers.length ? groupMembers : [guestData];
+    resetPartyState(partyMembers);
     
-    if (groupMembers && groupMembers.length > 1) {
-        // Multiple people in group - store and show selector
-        currentGroupMembers = groupMembers;
-        displayGroupSelector(groupMembers);
-        document.querySelector('.rsvp-subtitle').innerHTML = 
-            'Select who you\'d like to RSVP for, then complete the form for that person.';
+    if (partyMembers.length > 1) {
+        rsvpSubtitle.textContent =
+            'Please reply for each guest below. You only need to click submit once.';
     } else {
-        // Single person - load their form directly
-        document.querySelector('.rsvp-subtitle').innerHTML = 
+        rsvpSubtitle.textContent =
             `Welcome ${guestData.name}! Please complete your RSVP.`;
-        loadGuestForm(guestData);
     }
-}
-
-// Display group member radio buttons
-function displayGroupSelector(groupMembers) {
-    const selectorSection = document.getElementById('group-selector-section');
-    const selectorContainer = document.getElementById('group-selector');
-    
-    selectorContainer.innerHTML = '';
-    groupMembers.forEach((member, index) => {
-        const label = document.createElement('label');
-        label.className = 'radio-label';
-        
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'group-member';
-        radio.value = member.name;
-        radio.dataset.email = member.email;
-        if (index === 0) radio.checked = true;
-        
-        const span = document.createElement('span');
-        span.textContent = member.name;
-        
-        label.appendChild(radio);
-        label.appendChild(span);
-        selectorContainer.appendChild(label);
-        
-        // Add change listener to load form for selected member
-        radio.addEventListener('change', () => {
-            // Find member in group and load their data
-            const selectedMember = groupMembers.find(m => m.name === radio.value);
-            if (selectedMember) {
-                loadGuestForm(selectedMember);
-            }
-        });
-    });
-    
-    // Show selector and load first member's form
-    selectorSection.style.display = 'block';
-    loadGuestForm(groupMembers[0]);
-}
-
-// Load form with specific guest's data
-function loadGuestForm(guestData) {
-    // Set name and email (hidden)
-    document.getElementById('name').value = guestData.name;
-    document.getElementById('name').setAttribute('readonly', true);
-    document.getElementById('name').style.backgroundColor = 'rgba(0,0,0,0.05)';
-    document.getElementById('email').value = guestData.email;
-
-    // Reset all form inputs
-    document.querySelectorAll('input[name="attending"]').forEach(r => r.checked = false);
-    document.querySelectorAll('input[name="events"]').forEach(c => c.checked = false);
-    document.getElementById('message').value = '';
-
-    // Reset dietary field
-    updateDietaryFields();
-
-    // Reset opacity on events and dietary sections in case they were dimmed
-    const eventsField = document.querySelector('.checkbox-group')?.parentElement;
-    const dietaryField = document.getElementById('dietary-section');
-    if (eventsField) eventsField.style.opacity = '1';
-    if (dietaryField) dietaryField.style.opacity = '1';
-
-    // Hide any previous success/error message
-    const formMessage = document.getElementById('formMessage');
-    if (formMessage) formMessage.style.display = 'none';
 }
 
 // Initialize form on page load
 window.addEventListener('DOMContentLoaded', () => {
-    // Hide the "Number of Guests" field since we're doing individual RSVPs now
-    const guestsField = document.getElementById('guests');
-    if (guestsField) {
-        guestsField.parentElement.style.display = 'none';
-        guestsField.required = false;
-        guestsField.disabled = true;
-    }
-    
-    // Initialize dietary field
-    updateDietaryFields();
-    
-    // Load guest data
+    setEmptyGuestState('Loading your invitation...');
     preFillForm();
 });
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(form);
-    const data = {
+function validatePartyForm() {
+    if (!currentPartyMembers.length) {
+        showMessage('Please open your personalized invite link to RSVP.', 'error');
+        return false;
+    }
+
+    const missingMembers = currentPartyMembers.filter((member) => !isGuestReady(getGuestResponse(member.key)));
+
+    if (!missingMembers.length) {
+        return true;
+    }
+
+    missingMembers.forEach((member) => {
+        const card = guestBlocksContainer ? guestBlocksContainer.querySelector(`[data-guest-key="${member.key}"]`) : null;
+        if (card) {
+            card.classList.add('needs-response');
+        }
+    });
+
+    const validationMessage = missingMembers.length === 1
+        ? `Please choose an attendance response for ${missingMembers[0].name}.`
+        : 'Please choose an attendance response for each guest before submitting.';
+
+    showMessage(validationMessage, 'error');
+
+    const firstMissingCard = guestBlocksContainer ? guestBlocksContainer.querySelector('.guest-card.needs-response') : null;
+    if (firstMissingCard) {
+        firstMissingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return false;
+}
+
+function buildSingleGuestPayload(member, response, sharedMessage, timestamp) {
+    const isAttending = response.attending === RSVP_ATTENDING_YES;
+
+    return {
         action: 'updateRSVP',
-        timestamp: new Date().toISOString(),
-        email: formData.get('email'),
-        name: formData.get('name'),
+        timestamp,
+        email: member.email,
+        name: member.name,
         phone: 'Not provided',
-        attending: formData.get('attending'),
-        attendingCount: 1,  // Individual RSVP
-        dietary: document.getElementById('dietary-guest-1')?.value || 'None',
-        events: formData.getAll('events').join(', ') || 'None selected',
-        message: formData.get('message') || 'No message'
+        attending: response.attending,
+        attendingCount: isAttending ? 1 : 0,
+        dietary: isAttending ? (response.dietary.trim() || 'None') : 'Not attending',
+        events: isAttending ? (response.events.join(', ') || 'None selected') : 'Not attending',
+        message: sharedMessage
     };
-    
-    // Disable submit button
-    const submitButton = form.querySelector('.submit-button');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Submitting...';
-    
-    try {
-        // Check if Google Script URL is configured
-        if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
-            // For testing purposes - show success message
-            console.log('RSVP Data:', data);
-            showMessage('Thank you for your RSVP! Your response has been recorded. (Note: Google Sheets integration needs to be set up)', 'success');
-            scrollToFaqAfterSubmit();
-            resetFormForNextPerson();
-        } else {
-            // Send data to Google Sheets
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-            
-            // Show success message
-            const attendingText = data.attending === 'Yes, I\'ll be there!' ? 
-                'We can\'t wait to celebrate with you!' : 
-                'We\'ll miss you but thanks for letting us know.';
-            showMessage(`Thank you for your RSVP! ${attendingText}`, 'success');
-            scrollToFaqAfterSubmit();
-            
-            // Reset form for next person after a short delay
-            setTimeout(resetFormForNextPerson, 2000);
-        }
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        showMessage('Oops! There was an error submitting your RSVP. Please try again or contact us directly.', 'error');
-    } finally {
-        // Re-enable submit button
-        submitButton.disabled = false;
-        submitButton.textContent = 'Submit RSVP';
+}
+
+function buildPartyPayload() {
+    const timestamp = new Date().toISOString();
+    const sharedMessage = sharedMessageInput && sharedMessageInput.value.trim() ? sharedMessageInput.value.trim() : 'No message';
+    sharedPartyMessage = sharedMessageInput ? sharedMessageInput.value : '';
+
+    if (currentPartyMembers.length === 1) {
+        const member = currentPartyMembers[0];
+        return buildSingleGuestPayload(member, getGuestResponse(member.key), sharedMessage, timestamp);
     }
-});
 
-// Reset form to select next person in group
-function resetFormForNextPerson() {
-    const selectorSection = document.getElementById('group-selector-section');
-    const selectorRadios = document.querySelectorAll('input[name="group-member"]');
+    return {
+        action: 'updateGroupRSVP',
+        timestamp,
+        primaryEmail: primaryInviteEmail,
+        partySize: currentPartyMembers.length,
+        sharedMessage,
+        guests: currentPartyMembers.map((member) => buildSingleGuestPayload(member, getGuestResponse(member.key), sharedMessage, timestamp))
+    };
+}
 
-    if (selectorSection.style.display === 'block' && selectorRadios.length > 1) {
-        // Find the index of the currently selected radio
-        let currentIndex = -1;
-        selectorRadios.forEach((radio, i) => {
-            if (radio.checked) currentIndex = i;
-        });
+function getSuccessMessage(payload) {
+    const guests = payload.action === 'updateGroupRSVP' ? payload.guests : [payload];
+    const attendingGuests = guests.filter((guest) => guest.attending === RSVP_ATTENDING_YES).length;
 
-        const nextIndex = currentIndex + 1;
-
-        if (nextIndex < selectorRadios.length) {
-            // Select the next radio button visually
-            selectorRadios[nextIndex].checked = true;
-
-            // Directly call loadGuestForm with the next member's data
-            const nextMember = currentGroupMembers[nextIndex];
-            if (nextMember) {
-                loadGuestForm(nextMember);
-            }
-        } else {
-            // All group members done
-            showMessage('All RSVPs for your group have been submitted! Thank you!', 'success');
-            selectorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+    if (attendingGuests === guests.length) {
+        return guests.length > 1
+            ? 'Thank you for your RSVP! We cannot wait to celebrate with all of you.'
+            : 'Thank you for your RSVP! We cannot wait to celebrate with you.';
     }
+
+    if (attendingGuests === 0) {
+        return 'Thank you for your RSVP! We will miss you but thanks for letting us know.';
+    }
+
+    return 'Thank you for your RSVP! Your party responses have been recorded.';
 }
 
 function showMessage(message, type) {
+    if (!formMessage) return;
+
+    if (formMessageTimerId) {
+        clearTimeout(formMessageTimerId);
+    }
+
     formMessage.textContent = message;
     formMessage.className = `form-message ${type}`;
     formMessage.style.display = 'block';
@@ -505,29 +692,109 @@ function showMessage(message, type) {
     formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
     // Hide message after 10 seconds
-    setTimeout(() => {
+    formMessageTimerId = setTimeout(() => {
         formMessage.style.display = 'none';
+        formMessageTimerId = null;
     }, 10000);
 }
 
-// Show/hide attending-related fields
-const attendingRadios = document.querySelectorAll('input[name="attending"]');
-attendingRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        const eventsField = document.querySelector('.checkbox-group')?.parentElement;
-        const dietaryField = document.getElementById('dietary-section');
+if (form) {
+    form.addEventListener('change', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
 
-        if (e.target.value === 'Sorry, can\'t make it') {
-            if (eventsField) eventsField.style.opacity = '0.5';
-            if (dietaryField) dietaryField.style.opacity = '0.5';
-            // Don't require events/dietary if not attending
-            document.querySelectorAll('input[name="events"]').forEach(c => c.required = false);
-        } else {
-            if (eventsField) eventsField.style.opacity = '1';
-            if (dietaryField) dietaryField.style.opacity = '1';
+        const guestKey = target.dataset.guestKey;
+        const field = target.dataset.field;
+        if (!guestKey || !field) return;
+
+        const response = getGuestResponse(guestKey);
+        if (!response) return;
+
+        if (field === 'attending') {
+            response.attending = target.value;
+
+            if (response.attending === RSVP_ATTENDING_NO) {
+                response.events = [];
+                response.dietary = '';
+                clearGuestDetailInputs(target.closest('.guest-card'));
+            }
+
+            syncGuestCardState(guestKey);
+            hideMessage();
+            return;
+        }
+
+        if (field === 'events') {
+            const guestCard = target.closest('.guest-card');
+            response.events = guestCard
+                ? Array.from(guestCard.querySelectorAll('input[data-field="events"]:checked')).map((checkbox) => checkbox.value)
+                : [];
+            hideMessage();
         }
     });
-});
+
+    form.addEventListener('input', (event) => {
+        const target = event.target;
+
+        if (target === sharedMessageInput) {
+            sharedPartyMessage = sharedMessageInput.value;
+            hideMessage();
+            return;
+        }
+
+        if (!(target instanceof HTMLInputElement)) return;
+
+        const guestKey = target.dataset.guestKey;
+        const field = target.dataset.field;
+        if (!guestKey || field !== 'dietary') return;
+
+        const response = getGuestResponse(guestKey);
+        if (!response) return;
+
+        response.dietary = target.value;
+        hideMessage();
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!validatePartyForm()) {
+            return;
+        }
+
+        const payload = buildPartyPayload();
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+        }
+
+        try {
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+                console.log('RSVP Data:', payload);
+                showMessage('Thank you for your RSVP! Your response has been recorded. (Note: Google Sheets integration still needs to be set up.)', 'success');
+                scrollToFaqAfterSubmit();
+            } else {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                showMessage(getSuccessMessage(payload), 'success');
+                scrollToFaqAfterSubmit();
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            showMessage('Oops! There was an error submitting your RSVP. Please try again or contact us directly.', 'error');
+        } finally {
+            updatePartyOverview();
+        }
+    });
+}
 
 function updateNavbarState() {
     const navbar = document.querySelector('.navbar');
