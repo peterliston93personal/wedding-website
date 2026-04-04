@@ -1741,6 +1741,10 @@ body.overlay-active {
     font-weight: 600;
 }
 
+.faq-answer + .faq-answer {
+    margin-top: 10px;
+}
+
 .back-to-top {
     display: flex;
     align-items: center;
@@ -1825,8 +1829,9 @@ body.overlay-active {
 
     .event-name,
     .event-time {
-        font-size: 12px;
+        font-size: 13px;
         letter-spacing: 2.5px;
+        font-weight: 700;
     }
 
     .event-location,
@@ -1879,9 +1884,9 @@ body.overlay-active {
     .faq-flower {
         position: absolute;
         right: -8px;
-        top: 8px;
-        width: min(220px, 66vw);
-        height: auto;
+        top: 0;
+        height: min(110px, 28vw);
+        width: auto;
     }
 
     .faq-list {
