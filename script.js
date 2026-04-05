@@ -30,17 +30,34 @@ document.addEventListener('keydown', function (e) {
 // =============================================
 
 function openEnvelope() {
-    const overlay = document.getElementById('envelope-overlay');
+    const overlay  = document.getElementById('envelope-overlay');
+    const wrapper  = overlay.querySelector('.envelope-wrapper');
 
     // Prevent double-clicks
     overlay.onclick = null;
+    wrapper.style.cursor = 'default';
 
-    // Skip animation — go straight to site
-    overlay.classList.add('done');
-    document.body.classList.remove('overlay-active');
-    document.body.classList.add('site-revealed');
-    window.scrollTo({ top: 0, behavior: 'auto' });
-    updateNavbarState();
+    // Step 1: flip closed → open
+    wrapper.classList.add('opening');
+
+    // Step 2: flip done — zoom in and hold
+    setTimeout(function () {
+        wrapper.classList.add('peeking');
+    }, 300);
+
+    // Step 3: pause on open envelope, then fade out
+    setTimeout(function () {
+        overlay.classList.add('revealing');
+    }, 520);
+
+    // Step 4: hide overlay and restore scrolling
+    setTimeout(function () {
+        overlay.classList.add('done');
+        document.body.classList.remove('overlay-active');
+        document.body.classList.add('site-revealed');
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        updateNavbarState();
+    }, 800);
 }
 
 // =============================================
@@ -95,111 +112,6 @@ function duplicateBannerContent() {
 
 // Initialize banner duplication
 duplicateBannerContent();
-
-let mobileWgmLoopFrameId = null;
-let mobileWgmLoopResizeTimer = null;
-
-function initMobileWgmBannerLoop() {
-    if (mobileWgmLoopFrameId) {
-        cancelAnimationFrame(mobileWgmLoopFrameId);
-        mobileWgmLoopFrameId = null;
-    }
-
-    if (!window.matchMedia('(max-width: 768px)').matches) {
-        return;
-    }
-
-    const svg = document.querySelector('.wgm-wave-svg--mobile');
-    const loop = svg ? svg.querySelector('.wgm-mobile-loop') : null;
-    const path = svg ? svg.querySelector('#wgm-flow-text-path-mobile') : null;
-    const template = loop ? loop.querySelector('.wgm-mobile-loop-segment') : null;
-
-    if (!svg || !loop || !path || !template) {
-        return;
-    }
-
-    const extraSegments = Array.from(loop.querySelectorAll('.wgm-mobile-loop-segment')).slice(1);
-    extraSegments.forEach(segment => segment.remove());
-
-    const templateTextPath = template.querySelector('textPath');
-    if (!templateTextPath) {
-        return;
-    }
-
-    templateTextPath.setAttribute('startOffset', '0');
-
-    // Calculate compensation for non-uniform SVG scaling (preserveAspectRatio="none"
-    // squishes characters horizontally on narrow screens). textLength + lengthAdjust
-    // stretches the glyphs to counteract this while the text still follows the wave path.
-    const svgRect = svg.getBoundingClientRect();
-    let compensation = 1;
-    if (svgRect.width > 0 && svgRect.height > 0) {
-        compensation = (svgRect.height / 180) / (svgRect.width / 1200);
-    }
-
-    let pathLength = 0;
-    let segmentLength = 0;
-
-    try {
-        pathLength = path.getTotalLength();
-        segmentLength = template.getComputedTextLength();
-    } catch (error) {
-        return;
-    }
-
-    if (!pathLength || !segmentLength) {
-        return;
-    }
-
-    // Stretch glyphs to correct horizontal compression; cloneNode copies these attributes
-    const stretchedLength = segmentLength * compensation;
-    template.setAttribute('textLength', stretchedLength);
-    template.setAttribute('lengthAdjust', 'spacingAndGlyphs');
-
-    const gap = Math.max(stretchedLength * 0.32, 60);
-    const cycleLength = stretchedLength + gap;
-    const copiesNeeded = Math.max(4, Math.ceil((pathLength + cycleLength) / cycleLength) + 1);
-    const segments = [template];
-
-    for (let index = 1; index < copiesNeeded; index++) {
-        const clone = template.cloneNode(true);
-        loop.appendChild(clone);
-        segments.push(clone);
-    }
-
-    const unitsPerSecond = (220 / 2.1) * 2;
-    let lastTimestamp = performance.now();
-    let offset = 0;
-
-    function tick(timestamp) {
-        const deltaSeconds = (timestamp - lastTimestamp) / 1000;
-        lastTimestamp = timestamp;
-        offset = (offset + unitsPerSecond * deltaSeconds) % cycleLength;
-
-        segments.forEach((segment, index) => {
-            const textPath = segment.querySelector('textPath');
-            if (!textPath) {
-                return;
-            }
-            textPath.setAttribute('startOffset', `${index * cycleLength - offset}`);
-        });
-
-        mobileWgmLoopFrameId = requestAnimationFrame(tick);
-    }
-
-    mobileWgmLoopFrameId = requestAnimationFrame(tick);
-}
-
-if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(initMobileWgmBannerLoop);
-} else {
-    window.addEventListener('load', initMobileWgmBannerLoop);
-}
-
-window.addEventListener('resize', function () {
-    clearTimeout(mobileWgmLoopResizeTimer);
-    mobileWgmLoopResizeTimer = setTimeout(initMobileWgmBannerLoop, 150);
-});
 
 function scrollToFaqAfterSubmit() {
     const faqSection = document.getElementById('faq');
