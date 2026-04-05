@@ -43,12 +43,12 @@ function openEnvelope() {
     // Step 2: flip done — zoom in and hold
     setTimeout(function () {
         wrapper.classList.add('peeking');
-    }, 300);
+    }, 600);
 
     // Step 3: pause on open envelope, then fade out
     setTimeout(function () {
         overlay.classList.add('revealing');
-    }, 520);
+    }, 1040);
 
     // Step 4: hide overlay and restore scrolling
     setTimeout(function () {
@@ -57,7 +57,7 @@ function openEnvelope() {
         document.body.classList.add('site-revealed');
         window.scrollTo({ top: 0, behavior: 'auto' });
         updateNavbarState();
-    }, 800);
+    }, 1600);
 }
 
 // =============================================
