@@ -48,7 +48,7 @@ function openEnvelope() {
     // Step 3: pause on open envelope, then fade out
     setTimeout(function () {
         overlay.classList.add('revealing');
-    }, 1040);
+    }, 1540);
 
     // Step 4: hide overlay and restore scrolling
     setTimeout(function () {
@@ -57,7 +57,7 @@ function openEnvelope() {
         document.body.classList.add('site-revealed');
         window.scrollTo({ top: 0, behavior: 'auto' });
         updateNavbarState();
-    }, 1600);
+    }, 2100);
 }
 
 // =============================================
