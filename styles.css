@@ -795,7 +795,7 @@ body.overlay-active {
 }
 
 .wgm-wave-text--mobile {
-    font-size: 3.25rem;
+    font-size: 1.7rem;
     font-weight: 500;
     letter-spacing: 0.03em;
 }
@@ -1559,7 +1559,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 1.8rem;
+        font-size: 1.1rem;
     }
 
     .invitation-section {
@@ -1781,7 +1781,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 2.55rem;
+        font-size: 1.4rem;
     }
 
     .hero-names {
