@@ -30,34 +30,17 @@ document.addEventListener('keydown', function (e) {
 // =============================================
 
 function openEnvelope() {
-    const overlay  = document.getElementById('envelope-overlay');
-    const wrapper  = overlay.querySelector('.envelope-wrapper');
+    const overlay = document.getElementById('envelope-overlay');
 
     // Prevent double-clicks
     overlay.onclick = null;
-    wrapper.style.cursor = 'default';
 
-    // Step 1: flip closed → open
-    wrapper.classList.add('opening');
-
-    // Step 2: flip done — zoom in and hold
-    setTimeout(function () {
-        wrapper.classList.add('peeking');
-    }, 1000);
-
-    // Step 3: pause on open envelope, then fade out
-    setTimeout(function () {
-        overlay.classList.add('revealing');
-    }, 3200);
-
-    // Step 4: hide overlay and restore scrolling
-    setTimeout(function () {
-        overlay.classList.add('done');
-        document.body.classList.remove('overlay-active');
-        document.body.classList.add('site-revealed');
-        window.scrollTo({ top: 0, behavior: 'auto' });
-        updateNavbarState();
-    }, 5400);
+    // Skip animation — go straight to site
+    overlay.classList.add('done');
+    document.body.classList.remove('overlay-active');
+    document.body.classList.add('site-revealed');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    updateNavbarState();
 }
 
 // =============================================
