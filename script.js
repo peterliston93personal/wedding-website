@@ -128,13 +128,13 @@ function initMobileWgmBannerLoop() {
 
     templateTextPath.setAttribute('startOffset', '0');
 
-    // Compensate for non-uniform scaling from preserveAspectRatio="none".
-    // The viewBox is 1200×180 but the SVG renders at a much narrower width on mobile,
-    // causing characters to appear horizontally squished. Scale the text group to correct this.
+    // Calculate compensation for non-uniform SVG scaling (preserveAspectRatio="none"
+    // squishes characters horizontally on narrow screens). textLength + lengthAdjust
+    // stretches the glyphs to counteract this while the text still follows the wave path.
     const svgRect = svg.getBoundingClientRect();
+    let compensation = 1;
     if (svgRect.width > 0 && svgRect.height > 0) {
-        const compensation = (svgRect.height / 180) / (svgRect.width / 1200);
-        loop.setAttribute('transform', `scale(${compensation}, 1)`);
+        compensation = (svgRect.height / 180) / (svgRect.width / 1200);
     }
 
     let pathLength = 0;
@@ -151,8 +151,13 @@ function initMobileWgmBannerLoop() {
         return;
     }
 
-    const gap = Math.max(segmentLength * 0.32, 60);
-    const cycleLength = segmentLength + gap;
+    // Stretch glyphs to correct horizontal compression; cloneNode copies these attributes
+    const stretchedLength = segmentLength * compensation;
+    template.setAttribute('textLength', stretchedLength);
+    template.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+
+    const gap = Math.max(stretchedLength * 0.32, 60);
+    const cycleLength = stretchedLength + gap;
     const copiesNeeded = Math.max(4, Math.ceil((pathLength + cycleLength) / cycleLength) + 1);
     const segments = [template];
 
