@@ -243,60 +243,105 @@ function getHtmlTemplate_() {
   return [
     '<!DOCTYPE html>',
     '<html>',
-    '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Tara and Peter Wedding Invitation</title></head>',
-    '<body style="margin:0; padding:0; background-color:#e8e4dc;">',
-    '<div style="display:none; font-size:1px; color:#e8e4dc; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">You\'re invited to Tara and Peter\'s wedding weekend in West Cork. RSVP via your personal link.</div>',
-    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#e8e4dc;">',
-    '<tr><td align="center" style="padding:20px 12px 28px 12px;">',
-    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:620px; background-color:#f6f2ea; border:1px solid #d8d1c4;">',
-    '<tr><td style="padding:30px 30px 6px 30px; text-align:center; font-family:Georgia, Times New Roman, serif; color:#1d1b18;">',
-    '<p style="margin:0; font-size:58px; line-height:0.95; font-style:italic;">Tara</p>',
-    '<p style="margin:4px 0; font-size:38px; line-height:1; font-style:italic;">&amp;</p>',
-    '<p style="margin:0; font-size:58px; line-height:0.95; font-style:italic;">Peter</p>',
-    '<p style="margin:12px 0 0 0; font-size:12px; line-height:1.3; letter-spacing:2px; text-transform:uppercase; color:#5a544a;">Friday 18th September 2026</p>',
-    '<p style="margin:20px auto 0 auto; max-width:430px; font-size:18px; line-height:1.65; color:#2b2722;">We would love to celebrate with you. Please RSVP using your personal link below.</p>',
+    '<head>',
+    '<meta charset="UTF-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+    '<title>Tara and Peter Wedding Invitation</title>',
+    '<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet">',
+    '<!--[if mso]><style>* { font-family: Georgia, serif !important; }</style><![endif]-->',
+    '</head>',
+    '<body style="margin:0; padding:0; background-color:#E8E4DC;">',
+    '<div style="display:none; font-size:1px; color:#E8E4DC; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden;">You\'re invited to Tara and Peter\'s wedding weekend in West Cork. RSVP via your personal link.</div>',
+
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#E8E4DC;">',
+    '<tr><td align="center" style="padding:24px 12px 32px 12px;">',
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:620px;">',
+
+    // Invitation image header
+    '<tr><td style="padding:0; font-size:0; line-height:0;">',
+    '<img src="{{INVITE_IMAGE_URL}}" width="620" alt="Tara and Peter — Wedding Invitation" style="display:block; width:100%; height:auto; border:0;">',
     '</td></tr>',
-    '<tr><td style="padding:24px 30px 0 30px;">',
-    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #dbd3c5; border-bottom:1px solid #dbd3c5;">',
-    '<tr><td style="padding:18px 0; border-bottom:1px solid #e4ddcf;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
-    '<td width="64" valign="top" style="padding-right:10px;"><img src="{{TIME_ICON_URL}}" width="48" alt="Time" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
-    '<td valign="top" style="font-family:Georgia, Times New Roman, serif; color:#201e1a;">',
-    '<p style="margin:0; font-size:12px; line-height:1.2; letter-spacing:1.7px; text-transform:uppercase; color:#5a544a;">The Weekend</p>',
-    '<p style="margin:4px 0 0 0; font-size:22px; line-height:1.2;">Friday 18th September</p>',
-    '<p style="margin:4px 0 0 0; font-size:16px; line-height:1.4; color:#2f2a24;">Ceremony at 3pm</p>',
+
+    // WGM strip
+    '<tr><td style="background-color:#E8E4DC; padding:11px 0; text-align:center; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#1a1a1a; border-top:1px solid rgba(26,26,26,0.18); border-bottom:1px solid rgba(26,26,26,0.18); overflow:hidden; white-space:nowrap;">',
+    'We\u2019re Getting Married \u00a0\u2764\uFE0E\u00a0 We\u2019re Getting Married \u00a0\u2764\uFE0E\u00a0 We\u2019re Getting Married \u00a0\u2764\uFE0E\u00a0 We\u2019re Getting Married',
+    '</td></tr>',
+
+    // Names + intro
+    '<tr><td style="padding:52px 40px 18px 40px; text-align:center; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#1a1a1a; background-color:#E8E4DC;">',
+    '<p style="margin:0; font-size:62px; line-height:0.95; font-style:italic;">Tara</p>',
+    '<p style="margin:6px 0; font-size:42px; line-height:1; font-style:italic;">&amp;</p>',
+    '<p style="margin:0; font-size:62px; line-height:0.95; font-style:italic;">Peter</p>',
+    '<p style="margin:30px auto 0 auto; max-width:430px; font-size:18px; line-height:1.7; color:#2f2c27;">We would love to celebrate with you. Please RSVP using your personal link below.</p>',
+    '</td></tr>',
+
+    // Detail rows
+    '<tr><td style="padding:32px 40px 0 40px; background-color:#E8E4DC;">',
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid rgba(26,26,26,0.2); border-bottom:1px solid rgba(26,26,26,0.2);">',
+
+    // Time row
+    '<tr><td style="padding:22px 0; border-bottom:1px solid rgba(26,26,26,0.1);">',
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
+    '<td width="64" valign="top" style="padding-right:12px;"><img src="{{TIME_ICON_URL}}" width="48" alt="Time" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
+    '<td valign="top" style="font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#1a1a1a;">',
+    '<p style="margin:0; font-size:11px; line-height:1.2; letter-spacing:2.6px; text-transform:uppercase; color:#5a544a; font-weight:600;">The Weekend</p>',
+    '<p style="margin:6px 0 0 0; font-size:22px; line-height:1.2;">Friday 18th September</p>',
+    '<p style="margin:4px 0 0 0; font-size:15px; line-height:1.5; color:#2f2c27;">Ceremony at 3pm</p>',
     '</td>',
-    '<td align="right" valign="middle" style="font-family:Georgia, Times New Roman, serif; font-size:13px; line-height:1.4; padding-left:8px;"><a href="{{GOOGLE_CALENDAR_LINK}}" style="color:#2a2722; text-decoration:underline; white-space:nowrap;">Add to Calendar</a></td>',
+    '<td align="right" valign="middle" style="font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:13px; line-height:1.4; padding-left:8px;"><a href="{{GOOGLE_CALENDAR_LINK}}" style="color:#1a1a1a; text-decoration:underline; white-space:nowrap;">Add to Calendar</a></td>',
     '</tr></table></td></tr>',
-    '<tr><td style="padding:18px 0; border-bottom:1px solid #e4ddcf;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
-    '<td width="64" valign="top" style="padding-right:10px;"><img src="{{LOCATION_ICON_URL}}" width="48" alt="Location" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
-    '<td valign="top" style="font-family:Georgia, Times New Roman, serif; color:#201e1a;">',
-    '<p style="margin:0; font-size:12px; line-height:1.2; letter-spacing:1.7px; text-transform:uppercase; color:#5a544a;">Venue</p>',
-    '<p style="margin:4px 0 0 0; font-size:22px; line-height:1.2;">Dunmore House Hotel</p>',
-    '<p style="margin:4px 0 0 0; font-size:14px; line-height:1.5; color:#5b554b;">Muckross, Dunmore,<br>Clonakilty, Co. Cork<br>P85 HC03</p>',
+
+    // Venue row
+    '<tr><td style="padding:22px 0; border-bottom:1px solid rgba(26,26,26,0.1);">',
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
+    '<td width="64" valign="top" style="padding-right:12px;"><img src="{{LOCATION_ICON_URL}}" width="48" alt="Location" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
+    '<td valign="top" style="font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#1a1a1a;">',
+    '<p style="margin:0; font-size:11px; line-height:1.2; letter-spacing:2.6px; text-transform:uppercase; color:#5a544a; font-weight:600;">Venue</p>',
+    '<p style="margin:6px 0 0 0; font-size:22px; line-height:1.2;">Dunmore House Hotel</p>',
+    '<p style="margin:4px 0 0 0; font-size:14px; line-height:1.6; color:#5a544a;">Muckross, Dunmore,<br>Clonakilty, Co. Cork<br>P85 HC03</p>',
     '</td>',
-    '<td align="right" valign="middle" style="font-family:Georgia, Times New Roman, serif; font-size:13px; line-height:1.4; padding-left:8px;"><a href="https://maps.google.com/?q=Dunmore+House+Hotel+Clonakilty" style="color:#2a2722; text-decoration:underline; white-space:nowrap;">View Location</a></td>',
+    '<td align="right" valign="middle" style="font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:13px; line-height:1.4; padding-left:8px;"><a href="https://maps.google.com/?q=Dunmore+House+Hotel+Clonakilty" style="color:#1a1a1a; text-decoration:underline; white-space:nowrap;">View Location</a></td>',
     '</tr></table></td></tr>',
-    '<tr><td style="padding:18px 0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
-    '<td width="64" valign="top" style="padding-right:10px;"><img src="{{DRESS_ICON_URL}}" width="48" alt="Dress code" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
-    '<td valign="top" style="font-family:Georgia, Times New Roman, serif; color:#201e1a;">',
-    '<p style="margin:0; font-size:12px; line-height:1.2; letter-spacing:1.7px; text-transform:uppercase; color:#5a544a;">Dress Code</p>',
-    '<p style="margin:4px 0 0 0; font-size:22px; line-height:1.2;">Black Tie</p>',
+
+    // Dress code row
+    '<tr><td style="padding:22px 0;">',
+    '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>',
+    '<td width="64" valign="top" style="padding-right:12px;"><img src="{{DRESS_ICON_URL}}" width="48" alt="Dress code" style="display:block; width:48px; height:auto; border:0; margin-top:2px;"></td>',
+    '<td valign="top" style="font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#1a1a1a;">',
+    '<p style="margin:0; font-size:11px; line-height:1.2; letter-spacing:2.6px; text-transform:uppercase; color:#5a544a; font-weight:600;">Dress Code</p>',
+    '<p style="margin:6px 0 0 0; font-size:22px; line-height:1.2;">Black Tie</p>',
     '</td><td>&nbsp;</td>',
     '</tr></table></td></tr>',
+
     '</table></td></tr>',
-    '<tr><td align="center" style="padding:28px 30px 8px 30px; font-family:Georgia, Times New Roman, serif;"><a href="{{RSVP_LINK}}" style="display:inline-block; background-color:#000000; color:#f6f2ea; text-decoration:none; font-size:16px; line-height:1; letter-spacing:1px; padding:13px 34px; border-radius:999px; border:1px solid #000000;">RSVP</a></td></tr>',
-    '<tr><td align="center" style="padding:0 30px 24px 30px; font-family:Georgia, Times New Roman, serif; color:#3f3a31; font-size:14px; line-height:1.5;">Please RSVP by the 18th of July.</td></tr>',
-    '<tr><td style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td style="font-size:0; line-height:0;"><svg xmlns="http://www.w3.org/2000/svg" width="620" height="42" viewBox="0 0 620 42" style="display:block; width:100%; height:auto; background-color:#f6f2ea;"><path d="M0 18 C40 6 78 6 118 18 C158 30 196 30 236 18 C276 6 314 6 354 18 C394 30 432 30 472 18 C512 6 550 6 620 18 L620 42 L0 42 Z" fill="#ffffff" /></svg></td></tr></table></td></tr>',
-    '<tr><td align="center" style="padding:18px 26px 6px 26px; background-color:#ffffff; font-family:Georgia, Times New Roman, serif; font-size:13px; line-height:1.8; color:#302d27; border-top:1px solid #ebe4d9;">',
-    '<p style="margin:0; text-transform:uppercase; letter-spacing:1.3px; font-size:11px; color:#6b6458;">Calendar Links</p>',
-    '<p style="margin:6px 0 0 0;"><a href="{{GOOGLE_CALENDAR_LINK}}" style="color:#2f2a22; text-decoration:underline;">Google</a>&nbsp;|&nbsp;<a href="{{ICS_LINK}}" style="color:#2f2a22; text-decoration:underline;">Apple (ICS)</a>&nbsp;|&nbsp;<a href="{{OUTLOOK_LINK}}" style="color:#2f2a22; text-decoration:underline;">Outlook</a></p>',
+
+    // RSVP button
+    '<tr><td align="center" style="padding:42px 40px 10px 40px; background-color:#E8E4DC;">',
+    '<a href="{{RSVP_LINK}}" style="display:inline-block; background-color:#1a1a1a; color:#E8E4DC; text-decoration:none; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:15px; line-height:1; letter-spacing:2px; text-transform:uppercase; padding:14px 40px; border-radius:999px;">RSVP</a>',
     '</td></tr>',
-    '<tr><td style="padding:0 26px 26px 26px; background-color:#ffffff; font-family:Georgia, Times New Roman, serif; color:#5a544a; font-size:12px; line-height:1.7; text-align:center; border-top:1px solid #ebe4d9;">',
-    '<p style="margin:14px 0 0 0;">If the RSVP button does not work, copy and paste this link:</p>',
-    '<p style="margin:8px 0 0 0; word-break:break-all;"><a href="{{RSVP_LINK}}" style="color:#2f2a22;">{{RSVP_LINK}}</a></p>',
+
+    // RSVP deadline
+    '<tr><td align="center" style="padding:8px 40px 40px 40px; background-color:#E8E4DC; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#5a544a; font-size:14px; line-height:1.5; font-style:italic;">',
+    'Please RSVP by the 18th of July.',
     '</td></tr>',
+
+    // Wave into footer
+    '<tr><td style="padding:0; font-size:0; line-height:0; background-color:#E8E4DC;">',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="620" height="40" viewBox="0 0 620 40" style="display:block; width:100%; height:auto;"><path d="M0 16 C40 4 78 4 118 16 C158 28 196 28 236 16 C276 4 314 4 354 16 C394 28 432 28 472 16 C512 4 550 4 620 16 L620 40 L0 40 Z" fill="#d3cec6" /></svg>',
+    '</td></tr>',
+
+    // Calendar footer
+    '<tr><td align="center" style="padding:18px 26px 4px 26px; background-color:#d3cec6; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#3a3630; line-height:1.6;">Calendar Links</td></tr>',
+    '<tr><td align="center" style="padding:4px 26px 12px 26px; background-color:#d3cec6; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; font-size:13px; line-height:1.8; color:#3a3630;">',
+    '<a href="{{GOOGLE_CALENDAR_LINK}}" style="color:#1a1a1a; text-decoration:underline;">Google</a>&nbsp;|&nbsp;<a href="{{ICS_LINK}}" style="color:#1a1a1a; text-decoration:underline;">Apple (ICS)</a>&nbsp;|&nbsp;<a href="{{OUTLOOK_LINK}}" style="color:#1a1a1a; text-decoration:underline;">Outlook</a>',
+    '</td></tr>',
+    '<tr><td style="padding:6px 26px 26px 26px; background-color:#d3cec6; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#5a544a; font-size:12px; line-height:1.7; text-align:center;">',
+    '<p style="margin:8px 0 0 0;">If the RSVP button does not work, copy and paste this link:</p>',
+    '<p style="margin:8px 0 0 0; word-break:break-all;"><a href="{{RSVP_LINK}}" style="color:#2a2520;">{{RSVP_LINK}}</a></p>',
+    '</td></tr>',
+
     '</table></td></tr></table></body></html>'
-  ].join('');
+  ].join('\n');
 }
 
 var RSVP_WEB_APP_SHEET_NAME = 'Sheet1';
