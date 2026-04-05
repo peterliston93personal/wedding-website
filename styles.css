@@ -828,9 +828,14 @@ body.overlay-active {
 }
 
 .between-message p {
-    font-size: clamp(30px, 4.2vw, 48px);
+    font-size: clamp(22px, 4.2vw, 48px);
     line-height: 1.15;
     margin-bottom: 0.55em;
+}
+
+.between-message p:nth-child(4),
+.between-message p:nth-child(5) {
+    font-weight: 700;
 }
 
 .between-message p:last-of-type {
@@ -1925,12 +1930,12 @@ body.overlay-active {
     }
     
     .faq-flower {
-        width: 90px;
+        width: 130px;
         top: 4px;
     }
 
     .faq-list {
-        padding-right: 100px;
+        padding-right: 140px;
     }
     
     .rsvp-title {
