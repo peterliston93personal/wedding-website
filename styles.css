@@ -101,7 +101,7 @@ body.overlay-active {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 2s ease, transform 2s ease;
 }
 
 .envelope-overlay.revealing {
@@ -146,15 +146,15 @@ body.overlay-active {
 }
 
 .envelope-wrapper.opening .envelope-closed {
-    animation: flipOut 0.3s ease-in forwards;
+    animation: flipOut 0.35s ease-in forwards;
 }
 
 .envelope-wrapper.opening .envelope-open {
-    animation: flipIn 0.3s ease-out 0.3s forwards;
+    animation: flipIn 0.35s ease-out 0.35s forwards;
 }
 
 .envelope-wrapper.peeking {
-    animation: zoomPulse 0.4s cubic-bezier(0.34, 1.1, 0.64, 1) forwards;
+    animation: zoomPulse 1.5s cubic-bezier(0.34, 1.1, 0.64, 1) forwards;
 }
 
 /* =============================================
@@ -795,8 +795,8 @@ body.overlay-active {
 }
 
 .wgm-wave-text--mobile {
-    font-size: 1.7rem;
-    font-weight: 400;
+    font-size: 3.25rem;
+    font-weight: 500;
     letter-spacing: 0.03em;
 }
 
@@ -830,7 +830,27 @@ body.overlay-active {
 .between-message p {
     font-size: clamp(30px, 4.2vw, 48px);
     line-height: 1.15;
+    margin-bottom: 0.55em;
+}
+
+.between-message p:last-of-type {
     margin-bottom: 0;
+}
+
+.between-message strong {
+    font-weight: 700;
+}
+
+.scroll-cue {
+    font-size: 10px !important;
+    font-family: var(--font-body, sans-serif);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(58, 55, 50, 0.45);
+    margin-top: 22px !important;
+    margin-bottom: 0 !important;
+    line-height: 1.4;
 }
 
 .between-illustration {
@@ -906,6 +926,12 @@ body.overlay-active {
     font-weight: 400;
     line-height: 0.96;
     margin-bottom: 8px;
+}
+
+.day-title sup {
+    font-size: 0.5em;
+    vertical-align: super;
+    font-style: normal;
 }
 
 .day-date {
@@ -1559,8 +1585,10 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 1.0rem;
+        font-size: 2.95rem;
     }
+
+    .invitation-section {
         padding-top: 80px;
         padding-bottom: 20px;
     }
@@ -1705,7 +1733,7 @@ body.overlay-active {
     right: -8px;
     top: 12px;
     width: auto;
-    height: 420px;
+    height: 340px;
     opacity: 1;
     pointer-events: none;
 }
@@ -1713,7 +1741,7 @@ body.overlay-active {
 .faq-list {
     max-width: var(--content-max);
     margin: 0;
-    padding-right: 155px;
+    padding-right: 118px;
 }
 
 .faq-item {
@@ -1737,10 +1765,6 @@ body.overlay-active {
     line-height: 1.6;
     color: var(--ink-soft);
     font-weight: 600;
-}
-
-.faq-answer + .faq-answer {
-    margin-top: 10px;
 }
 
 .back-to-top {
@@ -1779,7 +1803,7 @@ body.overlay-active {
     }
 
     .wgm-wave-text--mobile {
-        font-size: 1.0rem;
+        font-size: 2.55rem;
     }
 
     .hero-names {
@@ -1827,9 +1851,8 @@ body.overlay-active {
 
     .event-name,
     .event-time {
-        font-size: 13px;
+        font-size: 12px;
         letter-spacing: 2.5px;
-        font-weight: 700;
     }
 
     .event-location,
@@ -1882,9 +1905,9 @@ body.overlay-active {
     .faq-flower {
         position: absolute;
         right: -8px;
-        top: 0;
-        height: min(110px, 28vw);
-        width: auto;
+        top: 8px;
+        width: min(220px, 66vw);
+        height: auto;
     }
 
     .faq-list {
