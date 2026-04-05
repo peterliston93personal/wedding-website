@@ -806,7 +806,7 @@ body.overlay-active {
     text-align: center;
     max-width: 960px;
     margin: 0 auto;
-    padding: 22px 52px 30px;
+    padding: 36px 52px 44px;
 }
 
 .between-star {
@@ -910,11 +910,11 @@ body.overlay-active {
 
 .schedule {
     max-width: var(--content-max);
-    margin: 20px auto 0;
+    margin: 38px auto 0;
 }
 
 .day-heading {
-    margin-bottom: 30px;
+    margin-bottom: 34px;
 }
 
 .day-title {
@@ -941,8 +941,8 @@ body.overlay-active {
 }
 
 .day-schedule {
-    padding-bottom: 28px;
-    margin-bottom: 28px;
+    padding-bottom: 38px;
+    margin-bottom: 38px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.14);
 }
 
@@ -953,7 +953,7 @@ body.overlay-active {
 }
 
 .event {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 }
 
 .event-header {
@@ -982,7 +982,7 @@ body.overlay-active {
 .event-description,
 .event-note {
     font-size: 15px;
-    line-height: 1.35;
+    line-height: 1.5;
     margin-top: 4px;
     color: var(--ink-soft);
     font-style: normal;
@@ -1059,7 +1059,7 @@ body.overlay-active {
 
 .stay-intro {
     max-width: var(--content-max);
-    margin: 18px auto 22px;
+    margin: 30px auto 32px;
     font-size: 15px;
     line-height: 1.6;
     color: var(--ink-soft);
@@ -1069,12 +1069,12 @@ body.overlay-active {
 .hotel-list {
     display: block;
     max-width: var(--content-max);
-    margin: 0 auto 30px;
+    margin: 0 auto 38px;
 }
 
 .hotel-card {
     padding: 0;
-    margin-bottom: 30px;
+    margin-bottom: 38px;
     line-height: 1.7;
 }
 
@@ -1087,13 +1087,13 @@ body.overlay-active {
     font-weight: 600;
     letter-spacing: var(--label-tracking);
     text-transform: uppercase;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
 .hotel-info {
     font-size: 15px;
     line-height: 1.6;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
     color: var(--ink-soft);
     max-width: 560px;
 }
@@ -1210,7 +1210,7 @@ body.overlay-active {
 
 .rsvp-subtitle {
     font-size: 15px;
-    margin-bottom: 50px;
+    margin-bottom: 18px;
     line-height: 1.65;
 }
 
@@ -1485,7 +1485,7 @@ body.overlay-active {
 
 /* Footer */
 .footer {
-    padding: 32px 40px 40px;
+    padding: 42px 40px 50px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -1662,7 +1662,7 @@ body.overlay-active {
 .rsvp-deadline {
     font-size: 14px;
     font-style: italic;
-    margin-top: -30px;
+    margin-top: 0;
     margin-bottom: 40px;
     color: #555;
 }
@@ -1703,7 +1703,7 @@ body.overlay-active {
 
 /* FAQ Section */
 .faq-section {
-    padding: 90px 0 10px;
+    padding: 90px 0 36px;
     background-color: #E8E4DC;
 }
 
@@ -1716,7 +1716,7 @@ body.overlay-active {
     font-size: clamp(68px, 10vw, 96px);
     line-height: 0.9;
     text-align: left;
-    margin-bottom: 22px;
+    margin-bottom: 34px;
 }
 
 .faq-flower {
@@ -1737,7 +1737,7 @@ body.overlay-active {
 
 .faq-item {
     padding: 0;
-    margin-bottom: 30px;
+    margin-bottom: 38px;
 }
 
 .faq-item:nth-child(1) {
@@ -1755,7 +1755,7 @@ body.overlay-active {
     letter-spacing: 2.4px;
     text-transform: uppercase;
     line-height: 1.16;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .faq-answer {
@@ -1766,11 +1766,15 @@ body.overlay-active {
     font-weight: 400;
 }
 
+.faq-answer + .faq-answer {
+    margin-top: 8px;
+}
+
 .back-to-top {
     display: block;
     text-align: center;
     width: fit-content;
-    margin: 24px auto 0;
+    margin: 44px auto 0;
     color: var(--ink);
     text-decoration: none;
     text-transform: uppercase;
@@ -1868,7 +1872,7 @@ body.overlay-active {
     }
 
     .between-message {
-        padding: 20px 44px 26px;
+        padding: 30px 44px 36px;
     }
 
     .between-star {
@@ -1886,12 +1890,12 @@ body.overlay-active {
     }
 
     .faq-section {
-        padding: 60px 0 12px;
+        padding: 60px 0 28px;
     }
 
     .faq-section .section-title {
         font-size: 74px;
-        margin-bottom: 18px;
+        margin-bottom: 26px;
     }
 
     .faq-flower {
@@ -1942,7 +1946,7 @@ body.overlay-active {
     }
 
     .back-to-top {
-        margin-top: 4px;
+        margin-top: 24px;
     }
     
     .faq-flower {
