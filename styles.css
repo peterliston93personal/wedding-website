@@ -806,7 +806,7 @@ body.overlay-active {
     text-align: center;
     max-width: 960px;
     margin: 0 auto;
-    padding: 22px 92px 30px;
+    padding: 22px 40px 30px;
 }
 
 .between-star {
@@ -1855,7 +1855,7 @@ body.overlay-active {
     }
 
     .between-message {
-        padding: 20px 66px 26px;
+        padding: 20px 28px 26px;
     }
 
     .between-star {
@@ -1883,14 +1883,14 @@ body.overlay-active {
 
     .faq-flower {
         position: absolute;
-        right: -8px;
+        right: 0;
         top: 8px;
-        width: min(220px, 66vw);
+        width: 140px;
         height: auto;
     }
 
     .faq-list {
-        padding-right: 0;
+        padding-right: 150px;
     }
 
     .faq-item {
@@ -1925,7 +1925,12 @@ body.overlay-active {
     }
     
     .faq-flower {
-        display: none;
+        width: 90px;
+        top: 4px;
+    }
+
+    .faq-list {
+        padding-right: 100px;
     }
     
     .rsvp-title {
