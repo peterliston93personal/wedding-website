@@ -964,7 +964,7 @@ body.overlay-active {
 }
 
 .event-name {
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: var(--label-tracking);
     text-transform: uppercase;
     font-weight: 600;
@@ -981,7 +981,7 @@ body.overlay-active {
 .event-description,
 .event-note {
     font-size: 15px;
-    line-height: 1.6;
+    line-height: 1.35;
     margin-top: 4px;
     color: var(--ink-soft);
     font-style: normal;
@@ -1708,7 +1708,7 @@ body.overlay-active {
 
 /* FAQ Section */
 .faq-section {
-    padding: 6px 0 10px;
+    padding: 40px 0 10px;
     background-color: #E8E4DC;
 }
 
@@ -1748,7 +1748,7 @@ body.overlay-active {
 .faq-question {
     font-family: var(--font-faq);
     font-size: clamp(24px, 4.2vw, 34px);
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 2.4px;
     text-transform: uppercase;
     line-height: 1.16;
@@ -1760,7 +1760,7 @@ body.overlay-active {
     font-size: 15px;
     line-height: 1.6;
     color: var(--ink-soft);
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .back-to-top {
@@ -1847,7 +1847,7 @@ body.overlay-active {
 
     .event-name,
     .event-time {
-        font-size: 12px;
+        font-size: 14px;
         letter-spacing: 2.5px;
     }
 
@@ -1855,7 +1855,7 @@ body.overlay-active {
     .event-description,
     .event-note {
         font-size: 15px;
-        line-height: 1.5;
+        line-height: 1.35;
     }
 
     .event-day-two-layout {
