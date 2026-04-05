@@ -1721,10 +1721,10 @@ body.overlay-active {
 
 .faq-flower {
     position: absolute;
-    right: -8px;
+    right: 0;
     top: 12px;
     width: clamp(120px, 16vw, 220px);
-    height: clamp(260px, 34vw, 420px);
+    height: auto;
     opacity: 1;
     pointer-events: none;
 }
@@ -1896,7 +1896,7 @@ body.overlay-active {
         right: 0;
         top: 8px;
         width: 160px;
-        height: 340px;
+        height: auto;
     }
 
     .faq-list {
@@ -1942,7 +1942,7 @@ body.overlay-active {
     .faq-flower {
         width: 150px;
         top: 4px;
-        height: 300px;
+        height: auto;
     }
 
     .faq-list {
