@@ -362,8 +362,7 @@ function buildGuestCardMarkup(member, index, totalGuests) {
 
                 <div class="form-group guest-card-dietary-group">
                     <label for="${member.key}-dietary">Dietary Requirements &amp; Allergens</label>
-                    <input type="text" id="${member.key}-dietary" name="dietary-${member.key}" value="${safeDietary}" placeholder="Dietary requirements or allergies (or leave blank if none)" data-guest-key="${member.key}" data-field="dietary">
-                    <p class="form-helper">Leave blank if there is nothing to note for this guest.</p>
+                    <input type="text" id="${member.key}-dietary" name="dietary-${member.key}" value="${safeDietary}" placeholder="Leave blank if nothing to note" data-guest-key="${member.key}" data-field="dietary">
                 </div>
             </div>
 

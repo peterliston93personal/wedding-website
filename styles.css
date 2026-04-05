@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&display=swap');
 
 /* Import Fonts */
 @font-face {
@@ -1760,7 +1760,7 @@ body.overlay-active {
 
 .faq-answer {
     font-family: var(--font-faq);
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.6;
     color: var(--ink-soft);
     font-weight: 400;
@@ -1929,7 +1929,7 @@ body.overlay-active {
     }
 
     .faq-answer {
-        font-size: 16px;
+        font-size: 13px;
         line-height: 1.3;
     }
 
