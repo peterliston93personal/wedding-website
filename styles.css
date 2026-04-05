@@ -837,10 +837,6 @@ body.overlay-active {
     margin-bottom: 0;
 }
 
-.between-message strong {
-    font-weight: 700;
-}
-
 .scroll-cue {
     font-size: 10px !important;
     font-family: var(--font-body, sans-serif);
