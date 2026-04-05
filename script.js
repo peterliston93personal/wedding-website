@@ -145,6 +145,15 @@ function initMobileWgmBannerLoop() {
 
     templateTextPath.setAttribute('startOffset', '0');
 
+    // Compensate for non-uniform scaling from preserveAspectRatio="none".
+    // The viewBox is 1200×180 but the SVG renders at a much narrower width on mobile,
+    // causing characters to appear horizontally squished. Scale the text group to correct this.
+    const svgRect = svg.getBoundingClientRect();
+    if (svgRect.width > 0 && svgRect.height > 0) {
+        const compensation = (svgRect.height / 180) / (svgRect.width / 1200);
+        loop.setAttribute('transform', `scale(${compensation}, 1)`);
+    }
+
     let pathLength = 0;
     let segmentLength = 0;
 
