@@ -806,7 +806,7 @@ body.overlay-active {
     text-align: center;
     max-width: 960px;
     margin: 0 auto;
-    padding: 22px 110px 30px;
+    padding: 22px 52px 30px;
 }
 
 .between-star {
@@ -1718,7 +1718,7 @@ body.overlay-active {
     position: absolute;
     right: -8px;
     top: 12px;
-    width: auto;
+    width: clamp(120px, 16vw, 220px);
     height: clamp(260px, 34vw, 420px);
     opacity: 1;
     pointer-events: none;
@@ -1860,7 +1860,7 @@ body.overlay-active {
     }
 
     .between-message {
-        padding: 20px 90px 26px;
+        padding: 20px 44px 26px;
     }
 
     .between-star {
@@ -1890,7 +1890,7 @@ body.overlay-active {
         position: absolute;
         right: 0;
         top: 8px;
-        width: 140px;
+        width: 160px;
         height: 340px;
     }
 
@@ -1935,7 +1935,7 @@ body.overlay-active {
     }
     
     .faq-flower {
-        width: 130px;
+        width: 150px;
         top: 4px;
         height: 300px;
     }
