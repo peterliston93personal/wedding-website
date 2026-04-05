@@ -1740,8 +1740,11 @@ body.overlay-active {
     margin-bottom: 30px;
 }
 
-.faq-item:nth-child(1),
-.faq-item:nth-child(2) {
+.faq-item:nth-child(1) {
+    padding-right: clamp(80px, 16vw, 160px);
+}
+
+.faq-item:nth-child(2) .faq-question {
     padding-right: clamp(80px, 16vw, 160px);
 }
 
@@ -1907,8 +1910,11 @@ body.overlay-active {
         margin-bottom: 36px;
     }
 
-    .faq-item:nth-child(1),
-    .faq-item:nth-child(2) {
+    .faq-item:nth-child(1) {
+        padding-right: 155px;
+    }
+
+    .faq-item:nth-child(2) .faq-question {
         padding-right: 155px;
     }
 
@@ -1949,8 +1955,11 @@ body.overlay-active {
         padding-right: 0;
     }
 
-    .faq-item:nth-child(1),
-    .faq-item:nth-child(2) {
+    .faq-item:nth-child(1) {
+        padding-right: 140px;
+    }
+
+    .faq-item:nth-child(2) .faq-question {
         padding-right: 140px;
     }
     
