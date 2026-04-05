@@ -1707,7 +1707,7 @@ body.overlay-active {
     right: -8px;
     top: 12px;
     width: auto;
-    height: 340px;
+    height: 420px;
     opacity: 1;
     pointer-events: none;
 }
@@ -1715,7 +1715,7 @@ body.overlay-active {
 .faq-list {
     max-width: var(--content-max);
     margin: 0;
-    padding-right: 118px;
+    padding-right: 155px;
 }
 
 .faq-item {
