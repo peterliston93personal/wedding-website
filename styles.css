@@ -1483,20 +1483,15 @@ body.overlay-active {
 
 /* Footer */
 .footer {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    padding: 32px 40px 40px;
     text-align: center;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+    background-color: #E8E4DC;
 }
 
 .footer p {
-    font-size: 13px;
+    font-size: 15px;
     font-style: italic;
-    letter-spacing: 0.3px;
+    letter-spacing: 1.5px;
 }
 
 .footer-rsvp {
@@ -1627,11 +1622,6 @@ body.overlay-active {
         padding: 0 20px;
     }
     
-    .footer {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
     .banner-text,
     .rsvp-text {
         font-size: 12px;
@@ -1708,7 +1698,7 @@ body.overlay-active {
 
 /* FAQ Section */
 .faq-section {
-    padding: 40px 0 10px;
+    padding: 90px 0 10px;
     background-color: #E8E4DC;
 }
 
@@ -1729,7 +1719,7 @@ body.overlay-active {
     right: -8px;
     top: 12px;
     width: auto;
-    height: 340px;
+    height: clamp(200px, 28vw, 340px);
     opacity: 1;
     pointer-events: none;
 }
@@ -1737,7 +1727,7 @@ body.overlay-active {
 .faq-list {
     max-width: var(--content-max);
     margin: 0;
-    padding-right: 118px;
+    padding-right: clamp(75px, 15vw, 118px);
 }
 
 .faq-item {
@@ -1764,29 +1754,22 @@ body.overlay-active {
 }
 
 .back-to-top {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    text-align: center;
     width: fit-content;
-    min-width: 190px;
-    margin-top: 18px;
-    padding: 12px 22px;
-    border: 1px solid rgba(26, 26, 26, 0.55);
+    margin: 24px auto 0;
     color: var(--ink);
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: var(--label-tracking);
     font-size: 12px;
     font-weight: 600;
-    border-radius: 999px;
-    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    transition: opacity 0.25s ease;
 }
 
 .back-to-top:hover,
 .back-to-top:focus-visible {
-    background-color: #1a1a1a;
-    color: #E8E4DC;
-    border-color: #1a1a1a;
+    opacity: 0.45;
 }
 
 @media (max-width: 480px) {
@@ -1890,7 +1873,7 @@ body.overlay-active {
     }
 
     .faq-section {
-        padding: 8px 0 12px;
+        padding: 60px 0 12px;
     }
 
     .faq-section .section-title {
@@ -1938,9 +1921,11 @@ body.overlay-active {
     }
 
     .back-to-top {
-        width: 100%;
-        min-width: 0;
         margin-top: 4px;
+    }
+    
+    .faq-flower {
+        display: none;
     }
     
     .rsvp-title {
