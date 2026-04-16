@@ -322,7 +322,7 @@ function getHtmlTemplate_() {
 
     // RSVP deadline
     '<tr><td align="center" style="padding:8px 40px 40px 40px; background-color:#E8E4DC; font-family:\'Source Serif 4\', Georgia, \'Times New Roman\', serif; color:#5a544a; font-size:14px; line-height:1.5; font-style:italic;">',
-    'Please RSVP by the 18th of July.',
+    'Please RSVP by the 18th of June.',
     '</td></tr>',
 
     // Wave into footer
