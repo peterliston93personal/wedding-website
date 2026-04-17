@@ -171,7 +171,7 @@ async function fetchGuestData(email) {
     }
     
     try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?email=${encodeURIComponent(email)}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?email=${encodeURIComponent(email)}&_t=${Date.now()}`);
         const data = await response.json();
         return data.found ? data.guest : null;
     } catch (error) {
@@ -187,7 +187,7 @@ async function fetchGroupMembers(email) {
     }
     
     try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGroup&email=${encodeURIComponent(email)}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getGroup&email=${encodeURIComponent(email)}&_t=${Date.now()}`);
         const data = await response.json();
         return data.found ? data.group : null;
     } catch (error) {
