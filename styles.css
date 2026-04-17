@@ -1483,6 +1483,18 @@ body.overlay-active {
     display: block;
 }
 
+.rsvp-form.is-locked .radio-label,
+.rsvp-form.is-locked .checkbox-label {
+    cursor: default;
+}
+
+.rsvp-form.is-locked input:disabled,
+.rsvp-form.is-locked textarea:disabled {
+    background-color: #f7f2ea;
+    color: #5c544a;
+    opacity: 1;
+}
+
 /* Footer */
 .footer {
     padding: 42px 40px 50px;

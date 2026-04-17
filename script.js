@@ -139,8 +139,10 @@ let partyResponses = {};
 let primaryInviteEmail = '';
 let sharedPartyMessage = '';
 let formMessageTimerId = null;
+let rsvpLocked = false;
 
 const RSVP_ATTENDING_YES = 'Yes, I\'ll be there!';
+const LOCKED_RSVP_MESSAGE = 'Your RSVP has been received. If you need to make any changes to your RSVP, please email taraandpeter2026@gmail.com.';
 const RSVP_ATTENDING_NO = 'Sorry, can\'t make it';
 const RSVP_EVENTS = [
     'Friday Ceremony & Reception',
@@ -209,12 +211,19 @@ function escapeHtml(value) {
 }
 
 function createGuestResponse(member) {
+    const savedDietary = member.dietary && member.dietary !== 'None' && member.dietary !== 'Not attending'
+        ? member.dietary
+        : '';
+    const savedEvents = Array.isArray(member.events)
+        ? member.events
+        : [];
+
     return {
         name: member.name,
         email: member.email,
-        attending: '',
-        dietary: '',
-        events: []
+        attending: member.rsvpStatus || '',
+        dietary: savedDietary,
+        events: savedEvents
     };
 }
 
@@ -224,7 +233,13 @@ function normalizeGuest(member, index) {
         name: member.name,
         email: member.email || '',
         partySize: member.partySize || 1,
-        groupId: member.groupId || ''
+        groupId: member.groupId || '',
+        rsvpStatus: member.rsvpStatus || '',
+        dietary: member.dietary || '',
+        events: Array.isArray(member.events) ? member.events : [],
+        message: member.message || '',
+        locked: Boolean(member.locked),
+        timestamp: member.timestamp || ''
     };
 }
 
@@ -282,7 +297,8 @@ function updatePartyOverview() {
     partyOverview.hidden = false;
 
     if (submitButton) {
-        submitButton.disabled = false;
+        submitButton.hidden = rsvpLocked;
+        submitButton.disabled = rsvpLocked ? true : false;
         submitButton.textContent = currentPartyMembers.length > 1 ? 'Submit Party RSVP' : 'Submit RSVP';
     }
 
@@ -290,27 +306,43 @@ function updatePartyOverview() {
         const onlyGuest = currentPartyMembers[0];
 
         partyTitle.textContent = onlyGuest.name;
-        partyProgress.textContent = isGuestReady(getGuestResponse(onlyGuest.key))
-            ? 'Everything looks ready. You only need to submit once.'
-            : 'Choose whether you can make it below, then submit once when you are ready.';
+        partyProgress.textContent = rsvpLocked
+            ? LOCKED_RSVP_MESSAGE
+            : isGuestReady(getGuestResponse(onlyGuest.key))
+                ? 'Everything looks ready. You only need to submit once.'
+                : 'Choose whether you can make it below, then submit once when you are ready.';
         return;
     }
 
     const readyGuestCount = getReadyGuestCount();
     partyTitle.textContent = `Reply for ${currentPartyMembers.length} guests`;
-    partyProgress.textContent = readyGuestCount === currentPartyMembers.length
-        ? 'All guest responses are ready. You only need to submit once.'
-        : `${readyGuestCount} of ${currentPartyMembers.length} guests responded so far. Choose an attendance response for each guest, then submit once.`;
+    partyProgress.textContent = rsvpLocked
+        ? LOCKED_RSVP_MESSAGE
+        : readyGuestCount === currentPartyMembers.length
+            ? 'All guest responses are ready. You only need to submit once.'
+            : `${readyGuestCount} of ${currentPartyMembers.length} guests responded so far. Choose an attendance response for each guest, then submit once.`;
+}
+
+function applyLockedFormState() {
+    if (!form) return;
+
+    form.classList.toggle('is-locked', rsvpLocked);
+
+    if (sharedMessageInput) {
+        sharedMessageInput.disabled = rsvpLocked;
+    }
 }
 
 function buildEventOptionsMarkup(member, response) {
+    const disabledAttr = rsvpLocked ? 'disabled' : '';
+
     return RSVP_EVENTS.map((eventName) => {
         const safeEventName = escapeHtml(eventName);
         const isChecked = response.events.includes(eventName) ? 'checked' : '';
 
         return `
             <label class="checkbox-label">
-                <input type="checkbox" name="events-${member.key}" value="${safeEventName}" data-guest-key="${member.key}" data-field="events" ${isChecked}>
+                <input type="checkbox" name="events-${member.key}" value="${safeEventName}" data-guest-key="${member.key}" data-field="events" ${isChecked} ${disabledAttr}>
                 <span>${safeEventName}</span>
             </label>
         `;
@@ -327,6 +359,7 @@ function buildGuestCardMarkup(member, index, totalGuests) {
     const safeDietary = escapeHtml(response.dietary);
     const safeYes = escapeHtml(RSVP_ATTENDING_YES);
     const safeNo = escapeHtml(RSVP_ATTENDING_NO);
+    const disabledAttr = rsvpLocked ? 'disabled' : '';
 
     return `
         <article class="guest-card ${isReady ? 'is-complete' : 'is-pending'} ${isDeclining ? 'is-declined' : ''}" data-guest-key="${member.key}">
@@ -342,11 +375,11 @@ function buildGuestCardMarkup(member, index, totalGuests) {
                 <label>Will ${safeName} be attending? *</label>
                 <div class="radio-group">
                     <label class="radio-label">
-                        <input type="radio" name="attending-${member.key}" value="${safeYes}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_YES ? 'checked' : ''}>
+                        <input type="radio" name="attending-${member.key}" value="${safeYes}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_YES ? 'checked' : ''} ${disabledAttr}>
                         <span>Yes, I'll be there!</span>
                     </label>
                     <label class="radio-label">
-                        <input type="radio" name="attending-${member.key}" value="${safeNo}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_NO ? 'checked' : ''}>
+                        <input type="radio" name="attending-${member.key}" value="${safeNo}" data-guest-key="${member.key}" data-field="attending" ${response.attending === RSVP_ATTENDING_NO ? 'checked' : ''} ${disabledAttr}>
                         <span>Sorry, can't make it</span>
                     </label>
                 </div>
@@ -362,7 +395,7 @@ function buildGuestCardMarkup(member, index, totalGuests) {
 
                 <div class="form-group guest-card-dietary-group">
                     <label for="${member.key}-dietary">Dietary Requirements &amp; Allergens</label>
-                    <input type="text" id="${member.key}-dietary" name="dietary-${member.key}" value="${safeDietary}" placeholder="Leave blank if nothing to note" data-guest-key="${member.key}" data-field="dietary">
+                    <input type="text" id="${member.key}-dietary" name="dietary-${member.key}" value="${safeDietary}" placeholder="Leave blank if nothing to note" data-guest-key="${member.key}" data-field="dietary" ${disabledAttr}>
                 </div>
             </div>
 
@@ -383,6 +416,7 @@ function renderGuestBlocks() {
         .map((member, index) => buildGuestCardMarkup(member, index, currentPartyMembers.length))
         .join('');
 
+    applyLockedFormState();
     updatePartyOverview();
 }
 
@@ -435,14 +469,15 @@ function syncGuestCardState(guestKey) {
 function resetPartyState(partyMembers) {
     currentPartyMembers = partyMembers.map((member, index) => normalizeGuest(member, index));
     partyResponses = {};
-    sharedPartyMessage = '';
+    rsvpLocked = currentPartyMembers.some((member) => member.locked);
+    sharedPartyMessage = currentPartyMembers.find((member) => member.message)?.message || '';
 
     currentPartyMembers.forEach((member) => {
         partyResponses[member.key] = createGuestResponse(member);
     });
 
     if (sharedMessageInput) {
-        sharedMessageInput.value = '';
+        sharedMessageInput.value = sharedPartyMessage;
     }
 
     hideMessage();
@@ -483,6 +518,12 @@ async function preFillForm() {
     const partyMembers = groupMembers && groupMembers.length ? groupMembers : [guestData];
     resetPartyState(partyMembers);
     
+    if (rsvpLocked) {
+        rsvpSubtitle.textContent = 'Your saved RSVP is shown below.';
+        showMessage(LOCKED_RSVP_MESSAGE, 'success');
+        return;
+    }
+
     if (partyMembers.length > 1) {
         rsvpSubtitle.textContent =
             'Please reply for each guest below. You only need to click submit once.';
@@ -499,6 +540,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function validatePartyForm() {
+    if (rsvpLocked) {
+        showMessage(LOCKED_RSVP_MESSAGE, 'success');
+        return false;
+    }
+
     if (!currentPartyMembers.length) {
         showMessage('Please open your personalized invite link to RSVP.', 'error');
         return false;
@@ -540,7 +586,6 @@ function buildSingleGuestPayload(member, response, sharedMessage, timestamp) {
         groupId: member.groupId || '',
         email: member.email,
         name: member.name,
-        phone: 'Not provided',
         attending: response.attending,
         attendingCount: isAttending ? 1 : 0,
         dietary: isAttending ? (response.dietary.trim() || 'None') : 'Not attending',
@@ -570,21 +615,8 @@ function buildPartyPayload() {
     };
 }
 
-function getSuccessMessage(payload) {
-    const guests = payload.action === 'updateGroupRSVP' ? payload.guests : [payload];
-    const attendingGuests = guests.filter((guest) => guest.attending === RSVP_ATTENDING_YES).length;
-
-    if (attendingGuests === guests.length) {
-        return guests.length > 1
-            ? 'Thank you for your RSVP! We cannot wait to celebrate with all of you.'
-            : 'Thank you for your RSVP! We cannot wait to celebrate with you.';
-    }
-
-    if (attendingGuests === 0) {
-        return 'Thank you for your RSVP! We will miss you but thanks for letting us know.';
-    }
-
-    return 'Thank you for your RSVP! Your party responses have been recorded.';
+function getSuccessMessage() {
+    return LOCKED_RSVP_MESSAGE;
 }
 
 function showMessage(message, type) {
@@ -682,8 +714,6 @@ if (form) {
         try {
             if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
                 console.log('RSVP Data:', payload);
-                showMessage('Thank you for your RSVP! Your response has been recorded. (Note: Google Sheets integration still needs to be set up.)', 'success');
-                scrollToFaqAfterSubmit();
             } else {
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -693,10 +723,12 @@ if (form) {
                     },
                     body: JSON.stringify(payload)
                 });
-
-                showMessage(getSuccessMessage(payload), 'success');
-                scrollToFaqAfterSubmit();
             }
+
+            rsvpLocked = true;
+            renderGuestBlocks();
+            showMessage(getSuccessMessage(), 'success');
+            scrollToFaqAfterSubmit();
         } catch (error) {
             console.error('Error submitting form:', error);
             showMessage('Oops! There was an error submitting your RSVP. Please try again or contact us directly.', 'error');
