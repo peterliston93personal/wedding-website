@@ -1,3 +1,5 @@
+var RSVP_CHANGE_CONTACT_EMAIL = 'taraandpeter2026@gmail.com';
+
 function doGet(e) {
   try {
     var sheet = getRsvpSheet_();
@@ -19,20 +21,32 @@ function doPost(e) {
     var sheet = getRsvpSheet_();
     var columns = getColumnIndexes_(sheet);
     var payload = parseRequestBody_(e);
+    var response;
 
     if (!payload || !payload.action) {
       return jsonResponse_({ success: false, error: 'Missing action in request payload.' });
     }
 
     if (payload.action === 'updateGroupRSVP') {
-      return jsonResponse_(updateGroupRSVP_(payload, sheet, columns));
+      response = updateGroupRSVP_(payload, sheet, columns);
+    } else if (payload.action === 'updateRSVP') {
+      response = updateGuestRSVP_(payload, sheet, columns);
+    } else {
+      return jsonResponse_({ success: false, error: 'Unsupported action: ' + payload.action });
     }
 
-    if (payload.action === 'updateRSVP') {
-      return jsonResponse_(updateGuestRSVP_(payload, sheet, columns));
+    if (response && response.success) {
+      try {
+        response.confirmationEmail = sendRsvpConfirmationEmail_(payload, response, sheet, columns);
+      } catch (emailError) {
+        response.confirmationEmail = {
+          sent: false,
+          error: String(emailError)
+        };
+      }
     }
 
-    return jsonResponse_({ success: false, error: 'Unsupported action: ' + payload.action });
+    return jsonResponse_(response);
   } catch (error) {
     return jsonResponse_({ success: false, error: String(error) });
   }
@@ -99,48 +113,100 @@ function updateGroupRSVP_(payload, sheet, columns) {
     return { success: false, error: 'Grouped RSVP payload did not contain any guests.' };
   }
 
+  var rows = sheet.getDataRange().getValues();
+  var preparedUpdates = [];
   var results = [];
+
   for (var index = 0; index < guests.length; index++) {
     var guestPayload = copyGuestPayload_(guests[index], payload);
-    results.push(writeGuestRSVPFromPayload_(guestPayload, sheet, columns));
+    var prepared = prepareGuestUpdate_(guestPayload, rows, columns);
+    results.push(prepared.result);
+
+    if (!prepared.ok) {
+      return {
+        success: false,
+        locked: prepared.result && prepared.result.locked === true,
+        error: prepared.result && prepared.result.error ? prepared.result.error : 'Unable to update RSVP.',
+        results: results
+      };
+    }
+
+    preparedUpdates.push(prepared);
+  }
+
+  for (var updateIndex = 0; updateIndex < preparedUpdates.length; updateIndex++) {
+    var preparedUpdate = preparedUpdates[updateIndex];
+    writeGuestValues_(sheet, preparedUpdate.rowNumber, columns, preparedUpdate.payload);
+    results[updateIndex] = preparedUpdate.result;
   }
 
   return {
-    success: results.every(function(result) { return result.updated; }),
+    success: true,
+    locked: false,
     results: results
   };
 }
 
 function updateGuestRSVP_(payload, sheet, columns) {
-  var result = writeGuestRSVPFromPayload_(payload, sheet, columns);
-  return {
-    success: result.updated,
-    result: result
-  };
-}
-
-function writeGuestRSVPFromPayload_(payload, sheet, columns) {
   var rows = sheet.getDataRange().getValues();
-  var rowNumber = findGuestRowNumber_(rows, columns, payload);
+  var prepared = prepareGuestUpdate_(payload, rows, columns);
 
-  if (!rowNumber) {
+  if (!prepared.ok) {
     return {
-      updated: false,
-      name: normalizeString_(payload.name),
-      email: normalizeString_(payload.email),
-      groupId: normalizeString_(payload.groupId),
-      error: 'Guest row not found.'
+      success: false,
+      locked: prepared.result && prepared.result.locked === true,
+      error: prepared.result && prepared.result.error ? prepared.result.error : 'Unable to update RSVP.',
+      result: prepared.result
     };
   }
 
-  writeGuestValues_(sheet, rowNumber, columns, payload);
+  writeGuestValues_(sheet, prepared.rowNumber, columns, prepared.payload);
 
   return {
-    updated: true,
+    success: true,
+    locked: false,
+    result: prepared.result
+  };
+}
+
+function prepareGuestUpdate_(payload, rows, columns) {
+  var rowNumber = findGuestRowNumber_(rows, columns, payload);
+  var result = {
+    updated: false,
     rowNumber: rowNumber,
     name: normalizeString_(payload.name),
     email: normalizeString_(payload.email),
     groupId: normalizeString_(payload.groupId)
+  };
+
+  if (!rowNumber) {
+    result.error = 'Guest row not found.';
+    return {
+      ok: false,
+      rowNumber: 0,
+      payload: payload,
+      result: result
+    };
+  }
+
+  if (isRowLocked_(rows[rowNumber - 1], columns)) {
+    result.locked = true;
+    result.error = 'This RSVP has already been submitted. If you need to make changes, please email ' + RSVP_CHANGE_CONTACT_EMAIL + '.';
+    return {
+      ok: false,
+      rowNumber: rowNumber,
+      payload: payload,
+      result: result
+    };
+  }
+
+  result.updated = true;
+
+  return {
+    ok: true,
+    rowNumber: rowNumber,
+    payload: payload,
+    result: result
   };
 }
 
@@ -173,6 +239,7 @@ function writeGuestValues_(sheet, rowNumber, columns, payload) {
   setCellValueIfPresent_(sheet, rowNumber, columns.events, events);
   setCellValueIfPresent_(sheet, rowNumber, columns.message, message);
   setCellValueIfPresent_(sheet, rowNumber, columns.timestamp, timestamp);
+  setCellValueIfPresent_(sheet, rowNumber, columns.locked, 'Yes');
 }
 
 function findGuestRowNumber_(rows, columns, payload) {
@@ -213,11 +280,20 @@ function findGuestRowNumber_(rows, columns, payload) {
 }
 
 function buildGuestResponse_(row, columns) {
+  var eventsValue = columns.events > -1 ? normalizeString_(row[columns.events]) : '';
+
   return {
     name: row[columns.name],
     email: row[columns.email],
     partySize: columns.partySize > -1 ? row[columns.partySize] : 1,
-    groupId: columns.groupId > -1 ? row[columns.groupId] : ''
+    groupId: columns.groupId > -1 ? row[columns.groupId] : '',
+    rsvpStatus: columns.rsvpStatus > -1 ? normalizeString_(row[columns.rsvpStatus]) : '',
+    attendingCount: columns.attendingCount > -1 ? Number(row[columns.attendingCount] || 0) : 0,
+    dietary: columns.dietary > -1 ? normalizeString_(row[columns.dietary]) : '',
+    events: parseEvents_(eventsValue),
+    message: columns.message > -1 ? normalizeString_(row[columns.message]) : '',
+    timestamp: columns.timestamp > -1 ? normalizeString_(row[columns.timestamp]) : '',
+    locked: isRowLocked_(row, columns)
   };
 }
 
@@ -262,7 +338,10 @@ function getColumnIndexes_(sheet) {
     dietary: ['Dietary Requirements', 'Dietary'],
     events: ['Events Attending', 'Events'],
     message: ['Message'],
-    timestamp: ['Timestamp']
+    timestamp: ['Timestamp'],
+    locked: ['RSVP Locked', 'Locked'],
+    confirmationSent: ['Confirmation Sent'],
+    confirmationSentAt: ['Confirmation Sent At']
   };
   var columns = {};
   var key;
@@ -282,6 +361,118 @@ function getColumnIndexes_(sheet) {
   }
 
   return columns;
+}
+
+function isRowLocked_(row, columns) {
+  var explicitLockValue = columns.locked > -1 ? normalizeString_(row[columns.locked]).toLowerCase() : '';
+  var status = columns.rsvpStatus > -1 ? normalizeString_(row[columns.rsvpStatus]) : '';
+  var timestamp = columns.timestamp > -1 ? normalizeString_(row[columns.timestamp]) : '';
+
+  if (explicitLockValue) {
+    return ['true', 'yes', 'y', 'locked'].indexOf(explicitLockValue) > -1;
+  }
+
+  return Boolean(status && timestamp);
+}
+
+function parseEvents_(value) {
+  var normalizedValue = normalizeString_(value);
+
+  if (!normalizedValue || normalizedValue === 'Not attending' || normalizedValue === 'None selected') {
+    return [];
+  }
+
+  return normalizedValue.split(',').map(function(eventName) {
+    return normalizeString_(eventName);
+  }).filter(function(eventName) {
+    return Boolean(eventName);
+  });
+}
+
+function sendRsvpConfirmationEmail_(payload, response, sheet, columns) {
+  var guests = payload.action === 'updateGroupRSVP' ? payload.guests : [payload];
+  var recipient = normalizeEmail_(payload.primaryEmail || payload.email || (guests[0] && guests[0].email));
+  var hasAnyAttending = guests.some(function(guest) {
+    return normalizeString_(guest.attending) === 'Yes, I\'ll be there!';
+  });
+  var introText = hasAnyAttending
+    ? 'Thank you for responding to our wedding invitation. We\'re delighted you can make it.'
+    : 'Thank you for responding to our wedding invitation. We\'re sorry you can\'t make it, but we really appreciate you letting us know.';
+  var summaryItems = guests.map(function(guest) {
+    var guestName = normalizeString_(guest.name) || 'Guest';
+    var guestReply = normalizeString_(guest.attending) || 'Response received';
+    return '<li style="margin:0 0 6px;">' + escapeHtml_(guestName) + ': ' + escapeHtml_(guestReply) + '</li>';
+  }).join('');
+
+  if (!recipient) {
+    return {
+      sent: false,
+      error: 'No email address available for confirmation.'
+    };
+  }
+
+  GmailApp.sendEmail(
+    recipient,
+    'RSVP received – Tara & Peter\'s Wedding',
+    introText + '\n\nYour RSVP has been received. If you need to make any changes to your RSVP, please email ' + RSVP_CHANGE_CONTACT_EMAIL + '.',
+    {
+      htmlBody: buildConfirmationEmailHtml_(introText, summaryItems),
+      name: 'Tara & Peter'
+    }
+  );
+
+  markConfirmationEmailSent_(sheet, columns, response);
+
+  return {
+    sent: true,
+    to: recipient
+  };
+}
+
+function buildConfirmationEmailHtml_(introText, summaryItems) {
+  return '' +
+    '<div style="margin:0;padding:24px;background:#f7f2ea;font-family:Georgia,serif;color:#1a1a1a;">' +
+      '<div style="max-width:620px;margin:0 auto;background:#ffffff;border:1px solid #e6ddd1;padding:32px 28px;">' +
+        '<p style="margin:0 0 16px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#7a6f61;">Tara & Peter</p>' +
+        '<h2 style="margin:0 0 16px;font-size:28px;font-weight:400;">RSVP received</h2>' +
+        '<p style="margin:0 0 16px;font-size:16px;line-height:1.6;">' + escapeHtml_(introText) + '</p>' +
+        '<p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Your RSVP has been received. If you need to make any changes to your RSVP, please email <a href="mailto:' + RSVP_CHANGE_CONTACT_EMAIL + '" style="color:#1a1a1a;">' + RSVP_CHANGE_CONTACT_EMAIL + '</a>.</p>' +
+        '<div style="margin:20px 0 0;padding:16px 18px;background:#faf7f2;border:1px solid #ede3d7;">' +
+          '<p style="margin:0 0 10px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a6f61;">Your response</p>' +
+          '<ul style="margin:0;padding-left:20px;font-size:15px;line-height:1.6;">' + summaryItems + '</ul>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function markConfirmationEmailSent_(sheet, columns, response) {
+  var rowNumbers = [];
+
+  if (response && response.result && response.result.rowNumber) {
+    rowNumbers.push(response.result.rowNumber);
+  }
+
+  if (response && Array.isArray(response.results)) {
+    response.results.forEach(function(result) {
+      if (result && result.rowNumber && rowNumbers.indexOf(result.rowNumber) === -1) {
+        rowNumbers.push(result.rowNumber);
+      }
+    });
+  }
+
+  rowNumbers.forEach(function(rowNumber) {
+    setCellValueIfPresent_(sheet, rowNumber, columns.confirmationSent, 'Yes');
+    setCellValueIfPresent_(sheet, rowNumber, columns.confirmationSentAt, new Date().toISOString());
+  });
+}
+
+function escapeHtml_(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function findHeaderIndex_(headerRow, acceptedNames) {
